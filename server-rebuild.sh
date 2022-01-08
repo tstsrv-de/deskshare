@@ -16,6 +16,5 @@ docker-compose --project-directory /home/rjhadmin/deskshare/ build
 docker-compose --project-directory /home/rjhadmin/deskshare/ up -d
 docker-compose --project-directory /home/rjhadmin/deskshare/ stop api
 docker-compose --project-directory /home/rjhadmin/deskshare/ up -d api
-
     
 chmod +x /home/rjhadmin/deskshare/*.sh
