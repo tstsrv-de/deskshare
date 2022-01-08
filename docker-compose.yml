@@ -1,7 +1,7 @@
 version: "3.9"
 services:
 
-  deskshare_db:
+  database:
     image: mysql:8.0
     container_name: dsapi_mysql
     environment:
@@ -16,7 +16,7 @@ services:
     ports:
      - "3306:3306"
 
-  deskshare_api:
+  api:
     build: ./DeskShareApi
     networks: 
       - tstsrv_default
@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:80"
     links:
-      - deskshare_db
+      - database
 
 networks:
   tstsrv_default:
