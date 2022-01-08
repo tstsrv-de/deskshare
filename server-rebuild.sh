@@ -1,6 +1,6 @@
 #!/bin/bash
 # stops docker-compose, reloads git repo, builds docker-compose fresh and restarts
-cd /home/rjhadmin/deskshare/
+
 docker-compose --project-directory /home/rjhadmin/deskshare/ stop
 git fetch origin
 git reset --hard origin/master
@@ -11,10 +11,10 @@ git -C /home/rjhadmin/deskshare/ pull
 #docker stop $(docker ps -a -q)
 #docker system prune -a --volumes
 #docker-compose --project-directory /home/rjhadmin/deskshare/ build --no-cache
-cd /home/rjhadmin/deskshare/
-docker-compose build 
-docker-compose start
-docker-compose restart deskshare_api
+
+docker-compose --project-directory /home/rjhadmin/deskshare/ build 
+docker-compose --project-directory /home/rjhadmin/deskshare/ start
+docker-compose --project-directory /home/rjhadmin/deskshare/ restart deskshare_api
 
     
 chmod +x /home/rjhadmin/deskshare/*.sh
