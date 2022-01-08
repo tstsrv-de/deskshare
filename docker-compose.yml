@@ -1,5 +1,6 @@
 version: "3.9"
 services:
+
   database:
     image: mysql:8.0
     container_name: dsapi_mysql
@@ -10,10 +11,15 @@ services:
      - seccomp:unconfined
     volumes:
      - ./db-dump:/docker-entrypoint-initdb.d
+    networks:
+     - tstsrv_default
     ports:
-    - "3306:3306"
+     - "3306:3306"
+
   api:
     build: ./DeskShareApi
+    networks: 
+      - tstsrv_default
     labels:
       - traefik.enable=true
       - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
@@ -21,7 +27,7 @@ services:
       - traefik.http.routers.deskshare.tls=true
       - traefik.http.routers.deskshare.tls.certresolver=letsencrypt
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - database
 
