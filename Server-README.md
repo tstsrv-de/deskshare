@@ -17,4 +17,4 @@ With the 'server-update-cron.sh' script in the **crontab** as...
 ## Note on howto bind a "docker run" command to traefik
 
 ``docker run -d --network tstsrv_default --label traefik.enable=true --label traefik.http.routers.ds.rule=Host\(\`ds.tstsrv.de\`\) --label traefik.http.routers.ds.entrypoints=https --label traefik.http.routers.ds.tls=true --label traefik.http.routers.ds.tls.certresolver=letsencrypt --name iamfoo containous/whoami``
- 
+  
