@@ -13,6 +13,6 @@ git -C /home/rjhadmin/deskshare/ pull
 #docker-compose --project-directory /home/rjhadmin/deskshare/ build --no-cache
 
 docker-compose --project-directory /home/rjhadmin/deskshare/ build 
-docker-compose --project-directory /home/rjhadmin/deskshare/ start
+docker-compose --project-directory /home/rjhadmin/deskshare/ up -d
     
-chmod +x /home/deskshare/deskshare/*.sh
+chmod +x /home/rjhadmin/deskshare/*.sh
