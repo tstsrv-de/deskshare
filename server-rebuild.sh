@@ -13,6 +13,9 @@ git -C /home/rjhadmin/deskshare/ pull
 #docker-compose --project-directory /home/rjhadmin/deskshare/ build --no-cache
 
 docker-compose --project-directory /home/rjhadmin/deskshare/ build 
-docker-compose --project-directory /home/rjhadmin/deskshare/ up -d
+docker-compose --project-directory /home/rjhadmin/deskshare/ start deskshare_db
+docker-compose --project-directory /home/rjhadmin/deskshare/ start deskshare_api
+docker-compose --project-directory /home/rjhadmin/deskshare/ restart deskshare_api
+
     
 chmod +x /home/rjhadmin/deskshare/*.sh

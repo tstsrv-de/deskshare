@@ -13,6 +13,7 @@ then
     git -C /home/rjhadmin/deskshare/ pull >> /home/rjhadmin/deskshare_cronlog.txt
     chmod +x /home/rjhadmin/deskshare/*.sh >> /home/rjhadmin/deskshare_cronlog.txt
     docker-compose --project-directory /home/rjhadmin/deskshare/ start >> /home/rjhadmin/deskshare_cronlog.txt
+    docker-compose --project-directory /home/rjhadmin/deskshare/ restart deskshare_api >> /home/rjhadmin/deskshare_cronlog.txt
     # echo "$now --> deskshare update > Update done!"
 else
     echo "$now --> deskshare update > Remote git repo same as local > Nothing to do!"
