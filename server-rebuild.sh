@@ -1,0 +1,18 @@
+#!/bin/bash
+# stops docker-compose, reloads git repo, builds docker-compose fresh and restarts
+
+git fetch origin
+git reset --hard origin/master
+git -C /home/rjhadmin/deskshare/ fetch
+git -C /home/rjhadmin/deskshare/ pull
+docker-compose --project-directory /home/rjhadmin/deskshare/ down
+
+# optional: delete also all images and prune local-data, then build with no-cache 
+#docker stop $(docker ps -a -q)
+#docker system prune -a --volumes
+#docker-compose --project-directory /home/rjhadmin/deskshare/ build --no-cache
+
+docker-compose --project-directory /home/rjhadmin/deskshare/ build 
+docker-compose --project-directory /home/rjhadmin/deskshare/ up -d
+    
+chmod +x /home/deskshare/deskshare/*.sh
