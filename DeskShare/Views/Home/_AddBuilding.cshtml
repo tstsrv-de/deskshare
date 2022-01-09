@@ -1,0 +1,33 @@
+﻿@model DeskShare.Models.Buildings
+  
+<h4>Gebäude hinzufügen</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label class="control-label">Anzeigereihenfolge</label>
+                <input asp-for="_Order" class="form-control" id="buildingOrder" />
+                <span asp-validation-for="_Order" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Standort</label>
+                <input asp-for="_Location" class="form-control" id="buildingLocation" />
+                <span asp-validation-for="_Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Bezeichnung</label>
+                <input asp-for="_Name" class="form-control"  id="buildingName"/>
+                <span asp-validation-for="_Name" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <button id="_AddBuildingSubmitButton" class="btn btn-primary">Erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+

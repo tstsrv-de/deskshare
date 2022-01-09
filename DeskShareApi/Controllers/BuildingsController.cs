@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskShareApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace DeskShareApi.Controllers
 {
@@ -14,21 +15,24 @@ namespace DeskShareApi.Controllers
     public class BuildingsController : ControllerBase
     {
         private readonly DbContextDeskShare _context;
+        private readonly ILogger<BuildingsController> _logger;
 
-        public BuildingsController(DbContextDeskShare context)
+        public BuildingsController(DbContextDeskShare context, ILogger<BuildingsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Buildings
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Buildings>>> Get_Buildings()
         {
-            return await _context._Buildings.OrderBy(x=>x._Order).ToListAsync();
+            _logger.LogInformation("Get_Buildings:");
+            var buildings= await _context._Buildings.OrderBy(x => x._Order).ToListAsync();
+            _logger.LogInformation($"{buildings.Count()} rows found");
+            return buildings;
         }
-
-        
-
+            
         // GET: api/Buildings/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Buildings>> GetBuildings(int id)

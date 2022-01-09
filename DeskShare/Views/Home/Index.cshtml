@@ -1,8 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<script>
+    var Urls =
+    {
+        login: '@Url.Action("LogIn", "Home")'
+    }
+
+</script>
+
+
+<div class="row">
+    <div class=" col-xl-4">
+        <label for="tbUserName" class="">Username:</label>
+    </div>
+    <div class=" col-xl-8">
+        <input type="text" class="form-control" id="tbUserName">
+    </div>
 </div>
+<br />
+<div class="row">
+    <div class=" col-xl-4">
+        <label for="tbPassword" class="">Password:</label>
+    </div>
+    <div class=" col-xl-8">
+        <input type="password" class="form-control" id="tbPassword">
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class=" col-xl-4">
+
+    </div>
+    <div class=" col-xl-4">
+        <button id="btnLogin"class="btn btn-block btn-primary" >Login</button>
+    </div>
+    <div class=" col-xl-4">
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+
+        document.getElementById("btnLogin").addEventListener("click",login);
+    });
+
+    function login() {
+        
+        var model = {
+            Username: window.$("#tbUserName").val(),
+            Password: window.$("#tbPassword").val()
+        }
+
+        window.$.ajax({
+            url: window.Urls.login,
+            data: { loginModel: model },
+            type: "POST",
+            success: function () {
+
+                console.log(document.cookie);
+                $(location).attr("href", "/Home/Booking");
+            },
+            error: function() { alert("error"); }
+        });
+    }
+</script>

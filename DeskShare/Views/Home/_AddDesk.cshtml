@@ -1,0 +1,66 @@
+﻿@model  DeskShare.Models.Desks
+
+<h4>Desks</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          
+            <div class="form-group">
+                <label class="control-label">Raum</label>
+                <select asp-for="_RoomId" class="form-control" id="ddRoom">
+                    <option disabled selected value="null"> -- Raum auswählen -- </option>
+                  
+                </select>
+                <span asp-validation-for="_RoomId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Anzeigereihenfolge</label>
+                <input asp-for="_Order" class="form-control" id="deskOrder" />
+                <span asp-validation-for="_Order" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Bezeichnung</label>
+                <input asp-for="_Name" class="form-control" id="deskName"/>
+                <span asp-validation-for="_Name" class="text-danger"></span>
+            </div>
+          
+            <div class="form-group">
+                <label  class="control-label">Anzahl Bildschirme</label>
+                <input asp-for="_Screens" class="form-control"id="deskScreens" />
+                <span asp-validation-for="_Screens" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="_Keyboard" id="deskKeyboard"/> Tastatur vorhanden
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="_Mouse"id="deskMouse" />  Maus vorhanden
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="_Docking"id="deskDocking" /> Dockingstation vorhanden
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="_Computer" id="deskComputer"/> Computer vorhanden
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="_Stand" id="deskStand" />Stehschreibtisch
+                </label>
+            </div>
+            <div class="form-group">
+                <button id="_AddDeskSubmitButton" class="btn btn-primary" >Erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+

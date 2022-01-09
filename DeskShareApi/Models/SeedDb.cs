@@ -33,7 +33,7 @@ namespace DeskShareApi.Models
                     _Perm = true,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
-                userManager.CreateAsync(user2, "Test@123");
+                var userRes2 = userManager.CreateAsync(user2, "Test@123").Result;
             }
 
             context.SaveChanges();

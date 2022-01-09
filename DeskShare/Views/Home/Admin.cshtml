@@ -1,0 +1,170 @@
+﻿
+@model IEnumerable<Buildings>
+    <div>
+        <a asp-action="Booking">Zurück</a>
+    </div>
+<span id="_AddBuildingSpan">
+    @await Html.PartialAsync("_AddBuilding", new Buildings())
+</span>
+<hr />
+<span id="_AddFloorSpan">
+    @await Html.PartialAsync("_AddFloor", Tuple.Create(Model, new Floors()))
+</span>
+<hr />
+<span id="_AddRoomSpan">
+    @await Html.PartialAsync("_AddRoom", new Rooms())
+</span>
+<hr />
+<span id="_AddDeskSpan">
+    @await Html.PartialAsync("_AddDesk", new Desks())
+</span>
+<div>
+    <a asp-action="Booking">Zurück</a>
+</div>
+<script>
+
+    var Urls =
+    {
+        getFloorsURL: '@Url.Action("GetFloorsByBuilding", "Home")',
+        getRoomsURL: '@Url.Action("GetRoomsByFloor", "Home")',
+
+        _AddBuildingURL: '@Url.Action("_AddBuilding", "Home")',
+        _AddFloorURL: '@Url.Action("_AddFloor", "Home")',
+        _AddRoomURL: '@Url.Action("_AddRoom", "Home")',
+        _AddDeskURL: '@Url.Action("_AddDesk", "Home")',
+    }
+
+
+        $("#_AddBuildingSubmitButton").click(function() {
+            var building= {
+                _Order: $("#buildingOrder").val(),
+                _Location: $("#buildingLocation").val(),
+                _Name: $("#buildingName").val()
+            }
+
+            window.$.ajax({
+                url: window.Urls._AddBuildingURL,
+                data: { building: JSON.stringify(building) },
+                type: "POST",
+                success: function (data) {
+                    $("#_AddBuildingSpan").html(data);
+                }, error: {
+
+                }
+            });
+    });
+        $("#_AddFloorSubmitButton").click(function() {
+            var floor= {
+                _Order: $("#floorOrder").val(),
+                _BuildingId: $("#ddBuilding").val(),
+                _Name: $("#floorName").val()
+            }
+
+            window.$.ajax({
+                url: window.Urls._AddFloorURL,
+                data: { floor: JSON.stringify(floor) },
+                type: "POST",
+                success: function (data) {
+                    $("#_AddFloorSpan").html(data);
+                }, error: {
+
+                }
+            });
+    });
+        $("#_AddRoomSubmitButton").click(function() {
+            var room= {
+                _FloorId: $("#ddFloor").val(),
+                _Order: $("#roomOrder").val(),
+                _Name: $("#roomName").val()
+            }
+
+            window.$.ajax({
+                url: window.Urls._AddRoomURL,
+                data: { room: JSON.stringify(room) },
+                type: "POST",
+                success: function (data) {
+                    $("#_AddRoomSpan").html(data);
+                }, error: {
+
+                }
+            });
+    });
+    $("#_AddDeskSubmitButton").click(function() {
+            var desk= {
+                _RoomId: $("#ddRoom").val(),
+                _Order: $("#deskOrder").val(),
+                _Name: $("#deskName").val(),
+                _Screens: $("#deskScreens").val(),
+                _Keyboard: $("#deskKeyboard").val(),
+                _Mouse: $("#deskMouse").val(),
+                _Docking: $("#deskDocking").val(),
+                _Computer: $("#deskComputer").val(),
+                _Stand: $("#deskStand").val(),
+            }
+
+            window.$.ajax({
+                url: window.Urls._AddDeskURL,
+                data: { desk: JSON.stringify(desk) },
+                type: "POST",
+                success: function (data) {
+                    $("#_AddDeskSpan").html(data);
+                }, error: {
+
+                }
+            });
+    });
+
+    $("#ddBuilding").change(function () {
+        var id = $("#ddBuilding").val();
+        if (id == null) {
+            alert("Bitte wählen Sie ein Gebäude aus.");
+            return;
+        }
+        fillBuildingDropdown(id);
+    });
+    function fillBuildingDropdown(id) {
+        window.$.ajax({
+            url: window.Urls.getFloorsURL,
+            data: { id: id },
+            type: "GET",
+            success: function (data) {
+                window.$("#ddFloor").html(" <option disabled selected value='null'> -- Stockwerk auswählen -- </option>");
+
+                window.$.each(data,
+                    function (i, item) {
+                   
+                        window.$("#ddFloor").append(window.$("<option></option>").attr("value", item._Id).text(item._Name));
+
+                    });
+            }, error: {
+
+            }
+        });
+    }
+    $("#ddFloor").change(function() {
+        var id = $("#ddFloor").val();
+        if (id == null) {
+            alert("Bitte wählen Sie ein Stockwerk aus.");
+            return;
+        }
+        fillFloorDropdown(id);
+    });
+    function fillFloorDropdown(id) {
+        window.$.ajax({
+            url: window.Urls.getRoomsURL,
+            data: { id: id },
+            type: "GET",
+            success: function (data) {
+                window.$("#ddRoom").html(" <option disabled selected value='null'> -- Raum auswählen -- </option>");
+
+                window.$.each(data,
+                    function (i, item) {
+                        window.$("#ddRoom").append(window.$("<option></option>").attr("value", item._Id).text(item._Name));
+
+                    });
+            }, error: {
+
+            }
+        });
+    }
+</script>

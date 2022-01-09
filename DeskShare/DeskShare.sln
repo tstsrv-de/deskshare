@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeskShare", "DeskShare.csproj", "{4ED3C108-BA99-4B99-91AF-19A3D6841A54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeskShare", "DeskShare.csproj", "{B7E00322-974F-400A-A248-AC33F47D699A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4ED3C108-BA99-4B99-91AF-19A3D6841A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4ED3C108-BA99-4B99-91AF-19A3D6841A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4ED3C108-BA99-4B99-91AF-19A3D6841A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4ED3C108-BA99-4B99-91AF-19A3D6841A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7E00322-974F-400A-A248-AC33F47D699A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7E00322-974F-400A-A248-AC33F47D699A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7E00322-974F-400A-A248-AC33F47D699A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7E00322-974F-400A-A248-AC33F47D699A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1A1CFFD8-3316-4A2E-BAD7-BC8E9F400AC7}
+		SolutionGuid = {94C34E5A-8D1D-4891-83E9-4B65B7D622DB}
 	EndGlobalSection
 EndGlobal

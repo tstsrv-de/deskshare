@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Bookings>
+
+<script src="~/js/deskshare.js" type="text/javascript"></script>
+
+@foreach (var booking in Model)
+{
+   
+    
+    <div class="fakeimg"><p>Tisch @booking._Desk am @booking._Timestamp Uhr gebucht.</p>
+                         <p>
+                             Zeitraum: von @booking._Start
+                             Uhr bis @booking._End Uhr
+                         </p><button id="btnDelBooking_@booking._Id  " class="btn btn-warning"onclick="deleteBooking(@booking._Id)">löschen</button>
+        <a id="btnBookBooking_@booking._Id  " class="btn btn-success toggle"href="#booking_container_@booking._Desk" >öffnen</a></div>;
+
+    } 
+
+<script>
+ 
+</script>

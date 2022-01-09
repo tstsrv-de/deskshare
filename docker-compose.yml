@@ -1,36 +1,43 @@
 version: "3.9"
 services:
-
   database:
+    networks:
+     - tstsrv_default  
     image: mysql:8.0
     container_name: dsapi_mysql
     environment:
       MYSQL_ROOT_PASSWORD: 23131001
-      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-    security_opt:
-     - seccomp:unconfined
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"   
     volumes:
      - ./db-dump:/docker-entrypoint-initdb.d
-    networks:
-     - tstsrv_default
     ports:
-     - "3306:3306"
-
+    - "3306:3306"
   api:
+    networks:
+     - tstsrv_default  
     build: ./DeskShareApi
-    networks: 
-      - tstsrv_default
+    container_name: dsapi
+    ports:
+      - "9977:9977"
+      - "9978:9978"
+    links:
+      - database
+  client:
+    networks:
+     - tstsrv_default  
     labels:
       - traefik.enable=true
       - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
       - traefik.http.routers.deskshare.entrypoints=https
       - traefik.http.routers.deskshare.tls=true
-      - traefik.http.routers.deskshare.tls.certresolver=letsencrypt
+      - traefik.http.routers.deskshare.tls.certresolver=letsencrypt     
+    build: ./DeskShare
+    container_name: dsclient
     ports:
-      - "8080:8080"
+      - "80:80"
+      - "443:443"
     links:
-      - database
-
+      - api
 networks:
   tstsrv_default:
     external: true

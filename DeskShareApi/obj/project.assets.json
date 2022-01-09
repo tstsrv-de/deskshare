@@ -5616,6 +5616,7 @@
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 5.0.13",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.13",
       "Microsoft.EntityFrameworkCore.Tools >= 5.0.13",
+      "Microsoft.Extensions.Logging >= 5.0.0",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.11.1",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 5.0.2",
       "MySql.EntityFrameworkCore >= 5.0.8",
@@ -5676,6 +5677,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[5.0.13, )"
+          },
+          "Microsoft.Extensions.Logging": {
+            "target": "Package",
+            "version": "[5.0.0, )"
           },
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
             "target": "Package",

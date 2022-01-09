@@ -1,0 +1,41 @@
+﻿@model Tuple<IEnumerable<Buildings>,DeskShare.Models.Floors>
+
+<h4>Stockwerk hinzufügen</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label  class="control-label">Anzeigereihenfolge</label>
+                <input asp-for="Item2._Order" class="form-control" id="floorOrder" />
+                <span asp-validation-for="Item2._Order" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Gebäude</label>
+                <select asp-for="Item2._BuildingId" class="form-control" id="ddBuilding">
+                    <option disabled selected value="null"> -- Gebäude auswählen -- </option>
+                    @foreach (var item in Model.Item1)
+                    {
+                        <option value=@item._Id>@item._Name - @item._Location</option>
+                    }
+                </select>
+
+          
+                <span asp-validation-for="Item2._BuildingId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Bezeichnung</label>
+                <input asp-for="Item2._Name" class="form-control" id="floorName" />
+                <span asp-validation-for="Item2._Name" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <button id="_AddFloorSubmitButton" class="btn btn-primary" >Erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+

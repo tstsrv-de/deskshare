@@ -1,10 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "snDYexAXLCRszjq+Mw42iMiG2XCPAOTHwHBKZUcSkOG5FJXwLMXAcrtm6d433Y5pd10JZZ+tiSQpnUb2VOPadg==",
+  "dgSpecHash": "k2htwLxdb2f0g1MfXq90AiYVbN85k0Yijqt0+4mTC0iAlSigYP7U1lhfb7Yil5P3V7ZQr4EVvftHVxvdH29/fw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Office\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.11.1\\microsoft.visualstudio.azure.containers.tools.targets.1.11.1.nupkg.sha512"
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.0\\microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.logging\\5.0.0\\microsoft.extensions.logging.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\5.0.0\\microsoft.extensions.logging.abstractions.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.options\\5.0.0\\microsoft.extensions.options.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.0\\microsoft.extensions.primitives.5.0.0.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.11.1\\microsoft.visualstudio.azure.containers.tools.targets.1.11.1.nupkg.sha512",
+    "C:\\Users\\Office\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }
