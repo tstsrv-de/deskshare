@@ -12,6 +12,8 @@ then
     git -C /home/rjhadmin/deskshare/ fetch >> /home/rjhadmin/deskshare_cronlog.txt
     git -C /home/rjhadmin/deskshare/ pull >> /home/rjhadmin/deskshare_cronlog.txt
     chmod +x /home/rjhadmin/deskshare/*.sh >> /home/rjhadmin/deskshare_cronlog.txt
+    docker-compose --project-directory /home/rjhadmin/deskshare/ build api >> /home/rjhadmin/deskshare_cronlog.txt
+    docker-compose --project-directory /home/rjhadmin/deskshare/ build client >> /home/rjhadmin/deskshare_cronlog.txt
     docker-compose --project-directory /home/rjhadmin/deskshare/ up -d >> /home/rjhadmin/deskshare_cronlog.txt
     docker-compose --project-directory /home/rjhadmin/deskshare/ stop api >> /home/rjhadmin/deskshare_cronlog.txt
     docker-compose --project-directory /home/rjhadmin/deskshare/ up -d api >> /home/rjhadmin/deskshare_cronlog.txt    
