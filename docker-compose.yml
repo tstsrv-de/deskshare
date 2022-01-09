@@ -15,6 +15,12 @@ services:
   api:
     networks:
      - tstsrv_default  
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.swagger.rule=Host(`swagger.tstsrv.de`)
+      - traefik.http.routers.swagger.entrypoints=https
+      - traefik.http.routers.swagger.tls=true
+      - traefik.http.routers.swagger.tls.certresolver=letsencrypt     
     build: ./DeskShareApi
     container_name: dsapi
     ports:
@@ -34,8 +40,8 @@ services:
     build: ./DeskShare
     container_name: dsclient
     ports:
-      - "80:80"
-      - "443:443"
+      - "6080:6080"
+      - "6443:6443"
     links:
       - api
 networks:
