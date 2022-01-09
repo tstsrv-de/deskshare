@@ -2,7 +2,7 @@ version: "3.9"
 services:
   database:
     networks:
-     - tstsrv_default  
+     - max_intern
     image: mysql:8.0
     container_name: dsapi_mysql
     environment:
@@ -14,13 +14,7 @@ services:
     - "3306:3306"
   api:
     networks:
-     - tstsrv_default  
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.swagger.rule=Host(`swagger.tstsrv.de`)
-      - traefik.http.routers.swagger.entrypoints=https
-      - traefik.http.routers.swagger.tls=true
-      - traefik.http.routers.swagger.tls.certresolver=letsencrypt     
+     - max_intern
     build: ./DeskShareApi
     container_name: dsapi
     ports:
@@ -30,7 +24,8 @@ services:
       - database
   client:
     networks:
-     - tstsrv_default  
+     - tstsrv_default 
+     - max_intern 
     labels:
       - traefik.enable=true
       - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
@@ -47,3 +42,5 @@ services:
 networks:
   tstsrv_default:
     external: true
+  max_intern:
+    external: false
