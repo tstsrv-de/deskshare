@@ -35,8 +35,8 @@ services:
     build: ./DeskShare
     container_name: dsclient
     ports:
-      - "6080:6080"
-      - "6443:6443"
+      - "6080:80"
+      - "6443:443"
     links:
       - api
 networks:
