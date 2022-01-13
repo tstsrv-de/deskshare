@@ -1,13 +1,4 @@
-﻿
-
-<script>
-    var Urls =
-    {
-        login: '@Url.Action("LogIn", "Home")'
-    }
-
-</script>
-
+﻿@{ Layout = "_Layout";}
 
 <div class="row">
     <div class=" col-xl-4">
@@ -24,6 +15,7 @@
     </div>
     <div class=" col-xl-8">
         <input type="password" class="form-control" id="tbPassword">
+        <p class="alert-danger" id="unauthLabel" style="display:none">Benutzername oder Passwort nicht korrekt.</p>
     </div>
 </div>
 <br />
@@ -32,7 +24,7 @@
 
     </div>
     <div class=" col-xl-4">
-        <button id="btnLogin"class="btn btn-block btn-primary" >Login</button>
+        <button id="btnLogin" onclick="login()" class="btn btn-block btn-primary">Login</button>
     </div>
     <div class=" col-xl-4">
 
@@ -40,29 +32,25 @@
 </div>
 
 <script>
-
-    $(document).ready(function() {
-
-        document.getElementById("btnLogin").addEventListener("click",login);
-    });
-
+    //ajax call to login
     function login() {
-        
+        $("#unauthLabel").css("display", "none");
         var model = {
             Username: window.$("#tbUserName").val(),
             Password: window.$("#tbPassword").val()
         }
-
+        
         window.$.ajax({
-            url: window.Urls.login,
+            url: '@Url.Action("LogIn", "Home")',
             data: { loginModel: model },
             type: "POST",
             success: function () {
-
-                console.log(document.cookie);
                 $(location).attr("href", "/Home/Booking");
             },
-            error: function() { alert("error"); }
+            error: function ()
+            {
+                $("#unauthLabel").css("display", "block");
+            }
         });
     }
 </script>

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "k2htwLxdb2f0g1MfXq90AiYVbN85k0Yijqt0+4mTC0iAlSigYP7U1lhfb7Yil5P3V7ZQr4EVvftHVxvdH29/fw==",
+  "dgSpecHash": "4K3WSHcLHBhOCLC0mfkdxFGcxMOSrcc9/VR7HnCpr0GanXcoehveltpuY1/vUo0m+IhUAb6DcEJtz2eOoiX4YA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj",
+  "projectFilePath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\DeskShare.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.0\\microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512",
     "C:\\Users\\Office\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",

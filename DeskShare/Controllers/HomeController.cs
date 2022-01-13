@@ -27,64 +27,96 @@ namespace DeskShare.Controllers
             _httpContextAccessor = httpContextAccessor;
             _api = api;
             _logger = logger;
+            _logger.LogInformation($"{DateTime.Now}: open 'HomeController'");
         }
+
+        #region Logging
+
+        private void LogInformation(string message)
+        {
+            _logger.LogInformation($"{DateTime.Now} - Information:{Environment.NewLine}{message}");
+        }
+        private void LogWarning(string message)
+        {
+            _logger.LogWarning($"{DateTime.Now} - Warning:{Environment.NewLine}{message}");
+        }
+        private void LogError(string message)
+        {
+            _logger.LogError($"{DateTime.Now} - Error:{Environment.NewLine}{message}");
+        }
+
+        #endregion
 
         #region ApiActions
 
         private async Task<ActionResult> Api_GetRecords(string apiUrl)
         {
-            _logger.LogInformation("----- get data from: "+apiUrl);
+            LogInformation($"get data from {apiUrl}");
             var apiDataResponse = await _api._Client.GetAsync(apiUrl);
 
-            if (apiDataResponse.StatusCode == HttpStatusCode.NotFound) {
-                _logger.LogWarning($"+++\n{apiUrl}:\nStatus Code: {apiDataResponse.StatusCode.ToString()}\n+++");
+            if (apiDataResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}");
                 return NotFound(apiDataResponse);
             }
-            if (apiDataResponse.StatusCode == HttpStatusCode.Unauthorized) {
-                _logger.LogWarning($"+++\n{apiUrl}:\n Status Code: {apiDataResponse.StatusCode.ToString()}\n+++");
-                return Unauthorized(apiDataResponse); 
+            if (apiDataResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}");
+                return Unauthorized(apiDataResponse);
             }
 
 
-            if (!apiDataResponse.IsSuccessStatusCode) return BadRequest(apiDataResponse);
+            if (!apiDataResponse.IsSuccessStatusCode)
+            {
+                LogError($"{apiDataResponse.StatusCode} from {apiUrl}");
+                return BadRequest(apiDataResponse);
+            }
 
             var stringResult = apiDataResponse.Content.ReadAsStringAsync().Result;
 
-            if (stringResult == "[]") return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'");
+            if (stringResult == "[]")
+            {
+                LogWarning($"empty json string from {apiUrl}");
+                return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'");
+            }
 
-            _logger.LogInformation("----- recieved data from: " + apiUrl);
+            LogInformation($"successfully recieved data from {apiUrl}");
             return Json(stringResult);
         }
-        
+
         private async Task<ActionResult> Api_DeleteRecord(string apiUrl)
         {
+            LogInformation($"delete data from {apiUrl}");
             var apiDataResponse = await _api._Client.DeleteAsync(apiUrl);
 
-            if (apiDataResponse.StatusCode == HttpStatusCode.NotFound) return NotFound(apiDataResponse);
+            if (apiDataResponse.StatusCode == HttpStatusCode.NotFound) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return NotFound(apiDataResponse); }
 
-            if (!apiDataResponse.IsSuccessStatusCode) return BadRequest(apiDataResponse);
+            if (!apiDataResponse.IsSuccessStatusCode) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return BadRequest(apiDataResponse); }
 
             var stringResult = apiDataResponse.Content.ReadAsStringAsync().Result;
 
-            if (stringResult == "[]") return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'");
+            if (stringResult == "[]") { LogWarning($"empty json string from {apiUrl}"); return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'"); }
 
+            LogInformation($"successfully deleted data from {apiUrl}");
             return Json(stringResult);
         }
         //Api_DeleteRecord
 
         private async Task<ActionResult> Api_PostRecord(string serializedModelObject, string apiUrl)
         {
+            LogInformation($"post data to '{apiUrl}'");
             var modelAsStringContent = new StringContent(serializedModelObject, Encoding.UTF8, "application/json");
             var apiDataResponse = await _api._Client.PostAsync(apiUrl, modelAsStringContent);
 
-            if (apiDataResponse.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(apiDataResponse);
-            if (!apiDataResponse.IsSuccessStatusCode) return BadRequest(apiDataResponse);
+            if (apiDataResponse.StatusCode == HttpStatusCode.Unauthorized) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return Unauthorized(apiDataResponse); }
+            if (!apiDataResponse.IsSuccessStatusCode) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return BadRequest(apiDataResponse); }
 
 
             var stringResult = apiDataResponse.Content.ReadAsStringAsync().Result;
 
-            if (stringResult == "[]") return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'");
+            if (stringResult == "[]") { LogWarning($"empty json string from {apiUrl}"); return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'"); }
 
+            LogInformation($"successfully post data to {apiUrl}");
             return Json(stringResult);
         }
 
@@ -92,24 +124,26 @@ namespace DeskShare.Controllers
 
         private ActionResult ApiLogin(LoginModel modelToCreate)
         {
+            LogInformation($"login attempt for User '{modelToCreate.Username}'");
             const string apiUrl = "api/User/login";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
             var result = Api_PostRecord(serializedModelObject, apiUrl).Result;
-
 
             return result;
         }
 
         private ActionResult GetUserPermStatus(string uid)
         {
-             var apiUrl = $"api/User/perm?uid={uid}";
-          
-           return Api_GetRecords(apiUrl).Result;
+            LogInformation($"get permission state for User '{uid}'");
+            var apiUrl = $"api/User/perm?uid={uid}";
+
+            return Api_GetRecords(apiUrl).Result;
         }
 
         private ActionResult ApiCreateBooking(Bookings modelToCreate)
         {
+            LogInformation($"User '{modelToCreate._User}' create booking on desk '{modelToCreate._Desk}'");
             const string apiUrl = "api/Bookings";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
@@ -120,6 +154,7 @@ namespace DeskShare.Controllers
         }
         private ActionResult ApiCreateBuilding(Buildings modelToCreate)
         {
+            LogInformation($"Create building '{modelToCreate._Id}' - '{modelToCreate._Name}'");
             const string apiUrl = "api/Buildings";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
@@ -129,6 +164,7 @@ namespace DeskShare.Controllers
         }
         private ActionResult ApiCreateFloors(Floors modelToCreate)
         {
+            LogInformation($"Create floor '{modelToCreate._Id}' - '{modelToCreate._Name}'");
             const string apiUrl = "api/Floors";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
@@ -138,6 +174,7 @@ namespace DeskShare.Controllers
         }
         private ActionResult ApiCreateRooms(Rooms modelToCreate)
         {
+            LogInformation($"Create room '{modelToCreate._Id}' - '{modelToCreate._Name}'");
             const string apiUrl = "api/Rooms";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
@@ -147,6 +184,7 @@ namespace DeskShare.Controllers
         }
         private ActionResult ApiCreateDesks(Desks modelToCreate)
         {
+            LogInformation($"Create desk '{modelToCreate._Id}' - '{modelToCreate._Name}'");
             const string apiUrl = "api/Desks";
             var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
 
@@ -156,6 +194,7 @@ namespace DeskShare.Controllers
         }
         private ActionResult ApiGetBuildings()
         {
+            LogInformation($"get all buildings");
             var apiUrl = $"api/Buildings";
 
             return Api_GetRecords(apiUrl).Result;
@@ -163,72 +202,62 @@ namespace DeskShare.Controllers
 
         private ActionResult ApiGetFloors()
         {
+            LogInformation($"get all floors");
             var apiUrl = $"api/Floors";
 
             return Api_GetRecords(apiUrl).Result;
         }
-        private ActionResult ApiGetFloorsByBuilding(int id)
+        private ActionResult ApiGetRooms()
         {
-            var apiUrl = $"api/Floors/byBuilding?id={id}";
+            LogInformation($"get all rooms");
+            var apiUrl = $"api/Rooms";
 
             return Api_GetRecords(apiUrl).Result;
         }
 
-        private ActionResult ApiGetRooms()
+        private ActionResult ApiGetDesks(Filter filterModel)
         {
-            var apiUrl = $"api/Rooms";
+            LogInformation($"get all desks");
+            var apiUrl = $"api/Desks{SplitFilterToDeskArguments(filterModel)}";
+
+            return Api_GetRecords(apiUrl).Result;
+        }
+
+        private ActionResult ApiGetBookings(Filter filterModel)
+        {
+            LogInformation($"get all bookings");
+            var apiUrl = $"api/Bookings{SplitFilterToBookingArguments(filterModel)}";
+
+            return Api_GetRecords(apiUrl).Result;
+        }
+
+        private ActionResult ApiGetFloorsByBuilding(int id)
+        {
+            LogInformation($"get all floors by buildung id '{id}'");
+            var apiUrl = $"api/Floors/byBuilding?id={id}";
 
             return Api_GetRecords(apiUrl).Result;
         }
 
         private ActionResult ApiGetRoomsByFloor(int id)
         {
+            LogInformation($"get all rooms by floor id '{id}'");
             var apiUrl = $"api/Rooms/byFloor?id={id}";
-            
-            return Api_GetRecords(apiUrl).Result;
-        }
-
-        private ActionResult ApiGetDesks(Filter filterModel)
-        {
-            var apiUrl = $"api/Desks{SplitFilterToDeskArguments(filterModel)}";
 
             return Api_GetRecords(apiUrl).Result;
         }
+
         private ActionResult ApiGetDesksByRoom(int id)
         {
+            LogInformation($"get all desks by room id '{id}'");
             var apiUrl = $"api/Desks/byRoom?id={id}";
 
             return Api_GetRecords(apiUrl).Result;
         }
-        private static string SplitFilterToDeskArguments(Filter filterModel)
-        {
-            var resultString = $"?mouse={filterModel._Mouse}" +
-                               $"&keyboard={filterModel._Keyboard}" +
-                               $"&computer={filterModel._Computer}" +
-                               $"&docking={filterModel._Docking}" +
-                               $"&noscreen={filterModel._NoScreen}" +
-                               $"&onescreen={filterModel._OneScreen}" +
-                               $"&twoscreens={filterModel._TwoScreens}" +
-                               $"&threescreens={filterModel._ThreeScreens}";
-            return resultString;
-        }
-        private static string SplitFilterToBookingArguments(Filter filterModel)
-        {
-            var resultString = $"?freetoday={filterModel._FreeToday}" +
-                               $"&freetomorrow={filterModel._FreeTomorrow}" +
-                               $"&freeweek={filterModel._FreeWeek}";
-            return resultString;
-        }
-      
 
-        private ActionResult ApiGetBookings(Filter filterModel)
-        {
-            var apiUrl = $"api/Bookings{SplitFilterToBookingArguments(filterModel)}";
-
-            return Api_GetRecords(apiUrl).Result;
-        }
         private ActionResult ApiGetBookingsByDesk(int id)
         {
+            LogInformation($"get all bookings by desk id '{id}'");
             var apiUrl = $"api/Bookings/byDesk?id={id}";
 
             return Api_GetRecords(apiUrl).Result;
@@ -236,42 +265,47 @@ namespace DeskShare.Controllers
 
         private ActionResult ApiGetBookingsByUser(string id)
         {
+            LogInformation($"get all bookings by user id '{id}'");
             var apiUrl = $"api/Bookings/byUser?id={id}";
-
-           
 
             return Api_GetRecords(apiUrl).Result;
         }
 
-        private ActionResult ApiDeleteBooking(int id,string uid)
+        private ActionResult ApiDeleteBooking(int id, string uid)
         {
+            LogInformation($"User '{uid}' delete booking '{id}'");
             var apiUrl = $"api/Bookings/{id}?uid={uid}";
             return Api_DeleteRecord(apiUrl).Result;
         }
 
-
-
         #endregion
 
-       #region ViewCalls
+        #region Redirects
 
         public ActionResult Index()
         {
+            LogInformation($"Redirect to /Index");
             return View();
         }
 
         public ActionResult Booking()
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
+            LogInformation($"Redirect to /Booking");
+            if (!CheckLogInStatus())
+            {
+                LogWarning($"User check not passed. Redirect to /Index");
+                return RedirectToAction("Index");
+            }
 
             return View();
         }
 
         public ActionResult Admin()
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
+            LogInformation($"Redirect to /Admin");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            if (!CheckAdminStatus()) return Unauthorized();
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
 
             var apiGetBuildings = ApiGetBuildings();
 
@@ -281,9 +315,63 @@ namespace DeskShare.Controllers
 
             var buildings = ConvertToModelBuildings(apiGetBuildings);
 
-          
-
             return View(buildings);
+        }
+
+        [HttpPost]
+        public IActionResult _AddDesk(string desk)
+        {
+            LogInformation($"Redirect partial /_AddDesk");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var deskModel = JsonConvert.DeserializeObject<Desks>(desk, IgnoreNullValues());
+
+            ApiCreateDesks(deskModel);
+
+            return PartialView("_AddBuilding", new Buildings());
+        }
+
+        [HttpPost]
+        public IActionResult _AddRoom(string room)
+        {
+            LogInformation($"Redirect partial /_AddRoom");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var roomModel = JsonConvert.DeserializeObject<Rooms>(room, IgnoreNullValues());
+
+            ApiCreateRooms(roomModel);
+
+            return PartialView("_AddRoom", new Rooms());
+        }
+
+        [HttpPost]
+        public IActionResult _AddFloor(string floor)
+        {
+            LogInformation($"Redirect partial /_AddFloor");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var floorModel = JsonConvert.DeserializeObject<Floors>(floor, IgnoreNullValues());
+
+            ApiCreateFloors(floorModel);
+
+            return PartialView("_AddFloor", Tuple.Create(new List<Buildings>().AsEnumerable(), new Floors()));
+        }
+
+        [HttpPost]
+        public IActionResult _AddBuilding(string building)
+        {
+            LogInformation($"Redirect partial /_AddFloor");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var buildingModel = JsonConvert.DeserializeObject<Buildings>(building, IgnoreNullValues());
+
+            ApiCreateBuilding(buildingModel);
+
+            return PartialView("_AddBuilding", new Buildings());
         }
 
         #endregion
@@ -303,7 +391,7 @@ namespace DeskShare.Controllers
                     _Building = building
                 };
 
-                foreach (var floor in floors.Where(x=>x._BuildingId.Equals(building._Id)))
+                foreach (var floor in floors.Where(x => x._BuildingId.Equals(building._Id)))
                 {
                     var viewRooms = new List<ViewRoom>();
 
@@ -312,7 +400,7 @@ namespace DeskShare.Controllers
                         _Floor = floor
                     };
 
-                    foreach (var room in rooms.Where(x=>x._FloorId.Equals(floor._Id)))
+                    foreach (var room in rooms.Where(x => x._FloorId.Equals(floor._Id)))
                     {
                         var viewDesks = new List<ViewDesk>();
 
@@ -321,12 +409,12 @@ namespace DeskShare.Controllers
                             _Room = room
                         };
 
-                        foreach (var desk in desks.Where(x=>x._RoomId.Equals(room._Id)))
+                        foreach (var desk in desks.Where(x => x._RoomId.Equals(room._Id)))
                         {
                             var viewDesk = new ViewDesk
                             {
                                 _Desk = desk,
-                                _BookingsList = bookings.Where(x=>x._Desk.Equals(desk._Id)).ToList()
+                                _BookingsList = bookings.Where(x => x._Desk.Equals(desk._Id)).ToList()
                             };
                             viewDesks.Add(viewDesk);
                         }
@@ -345,29 +433,50 @@ namespace DeskShare.Controllers
         }
 
         private static IEnumerable<Buildings> ConvertToModelBuildings(ActionResult apiResult)
-                {
-                    return JsonConvert.DeserializeObject<IEnumerable<Buildings>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
-                }
+        {
+            return JsonConvert.DeserializeObject<IEnumerable<Buildings>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
 
-                private static IEnumerable<Floors> ConvertToModelFloors(ActionResult apiResult)
-                {
-                    return JsonConvert.DeserializeObject<IEnumerable<Floors>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
-                }
+        private static IEnumerable<Floors> ConvertToModelFloors(ActionResult apiResult)
+        {
+            return JsonConvert.DeserializeObject<IEnumerable<Floors>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
 
-                private static IEnumerable<Rooms> ConvertToModelRooms(ActionResult apiResult)
-                {
-                    return JsonConvert.DeserializeObject<IEnumerable<Rooms>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
-                }
+        private static IEnumerable<Rooms> ConvertToModelRooms(ActionResult apiResult)
+        {
+            return JsonConvert.DeserializeObject<IEnumerable<Rooms>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
 
-                private static IEnumerable<Desks> ConvertToModelDesks(ActionResult apiResult)
-                {
-                    return JsonConvert.DeserializeObject<IEnumerable<Desks>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
-                }
+        private static IEnumerable<Desks> ConvertToModelDesks(ActionResult apiResult)
+        {
+            return JsonConvert.DeserializeObject<IEnumerable<Desks>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
 
-                private static IEnumerable<Bookings> ConvertToModelBookings(ActionResult apiResult)
-                {
-                    return JsonConvert.DeserializeObject<IEnumerable<Bookings>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
-                }
+        private static IEnumerable<Bookings> ConvertToModelBookings(ActionResult apiResult)
+        {
+            return JsonConvert.DeserializeObject<IEnumerable<Bookings>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
+
+        private static string SplitFilterToDeskArguments(Filter filterModel)
+        {
+            var resultString = $"?mouse={filterModel._Mouse}" +
+                               $"&keyboard={filterModel._Keyboard}" +
+                               $"&computer={filterModel._Computer}" +
+                               $"&docking={filterModel._Docking}" +
+                               $"&noscreen={filterModel._NoScreen}" +
+                               $"&onescreen={filterModel._OneScreen}" +
+                               $"&twoscreens={filterModel._TwoScreens}" +
+                               $"&threescreens={filterModel._ThreeScreens}";
+            return resultString;
+        }
+
+        private static string SplitFilterToBookingArguments(Filter filterModel)
+        {
+            var resultString = $"?freetoday={filterModel._FreeToday}" +
+                               $"&freetomorrow={filterModel._FreeTomorrow}" +
+                               $"&freeweek={filterModel._FreeWeek}";
+            return resultString;
+        }
 
         #endregion
 
@@ -376,24 +485,27 @@ namespace DeskShare.Controllers
         [HttpPost]
         public ActionResult LogIn(LoginModel loginModel)
         {
+            LogInformation($"Ajax call to LogIn for '{loginModel.Username}'");
+
             DeleteCookie("Tkn");
             DeleteCookie("uid");
 
             if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) || string.IsNullOrEmpty(loginModel.Username))
             {
+                LogWarning($"Username or password empty");
                 return Unauthorized();
             }
 
             var res = ApiLogin(loginModel);
 
-            var resJsonResult = (JsonResult)res;
+             if (!IsTypeOfJson(res)) { LogWarning($"Login wurde abgelehnt."); return Unauthorized(); }
+
+            var resJsonResult = (JsonResult)res;        
 
             var resobj = JsonConvert.DeserializeObject<jwtToken>((string)resJsonResult.Value, IgnoreNullValues());
-            
-            if (resobj == null) return Ok();
 
-            WriteCookie("Tkn",resobj.token,resobj.expiration);
-            WriteCookie("uid",resobj.user,resobj.expiration);
+            WriteCookie("Tkn", resobj.token, resobj.expiration);
+            WriteCookie("uid", resobj.user, resobj.expiration);
 
             return Ok();
         }
@@ -401,27 +513,25 @@ namespace DeskShare.Controllers
         [HttpPost]
         public ActionResult CreateBooking(Bookings bookingModel)
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
-            
-                var uid = _httpContextAccessor.HttpContext?.Request.Cookies["uid"];
-                bookingModel._Timestamp=DateTime.Now;
-                bookingModel._User= uid;
+            LogInformation($"Ajax call to create booking for user '{bookingModel._User}' in desk '{bookingModel._Desk}'");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-                var res = ApiCreateBooking(bookingModel);
+            bookingModel._Timestamp = DateTime.Now;
+            bookingModel._User = _httpContextAccessor.HttpContext?.Request.Cookies["uid"]; ;
+
+            var res = ApiCreateBooking(bookingModel);
 
             var resJsonResult = (JsonResult)res;
 
             var resobj = JsonConvert.DeserializeObject<Bookings>((string)resJsonResult.Value, IgnoreNullValues());
 
-
             return Ok(resobj);
         }
-
-
 
         [HttpGet]
         public ActionResult LogOut()
         {
+            LogInformation($"Ajax call to LogOut");
 
             DeleteCookie("Tkn");
             DeleteCookie("uid");
@@ -432,47 +542,43 @@ namespace DeskShare.Controllers
         [HttpDelete]
         public ActionResult DeleteBooking(int id)
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
+            LogInformation($"Ajax call to delete booking id '{id}'");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            var uid = _httpContextAccessor.HttpContext?.Request.Cookies["uid"];
+            var apiGetBookings = ApiDeleteBooking(id, _httpContextAccessor.HttpContext?.Request.Cookies["uid"]);
 
-          
+            if (IsTypeOfUnauthorized(apiGetBookings)) { LogWarning($"Delete of booking id '{id}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (IsTypeOfBadRequest(apiGetBookings)) { LogWarning($"Delete of booking id '{id}' was not successful."); return BadRequest("Ihre Anfrage konnte nicht bearbeitet werden. " + apiGetBookings); }
 
-            var apiGetBookings = ApiDeleteBooking(id, uid);
-
-            if (IsTypeOfUnauthorized(apiGetBookings)) return RedirectToAction("Index");
-            if (IsTypeOfBadRequest(apiGetBookings)) return BadRequest("Ihre Anfrage konnte nicht bearbeitet werden. "+ apiGetBookings);
-            
             return Ok();
         }
 
         [HttpGet]
         public ActionResult GetMyBookings()
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Booking");
+            LogInformation($"Ajax call to get bookings for user '{_httpContextAccessor.HttpContext?.Request.Cookies["uid"]}'");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            var uid = _httpContextAccessor.HttpContext?.Request.Cookies["uid"];
+            var apiGetBookings = ApiGetBookingsByUser(_httpContextAccessor.HttpContext?.Request.Cookies["uid"]);
 
-            var apiGetBookings = ApiGetBookingsByUser(uid);
+            if (IsTypeOfUnauthorized(apiGetBookings)) { LogWarning($"Get bookings for '{_httpContextAccessor.HttpContext?.Request.Cookies["uid"]}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
-           if (IsTypeOfUnauthorized(apiGetBookings)) return RedirectToAction("Index");
+            var bookings = IsTypeOfJson(apiGetBookings) ? ConvertToModelBookings(apiGetBookings).ToList() : new List<Bookings>();
 
-           var bookings = IsTypeOfJson(apiGetBookings) ? ConvertToModelBookings(apiGetBookings).ToList() : new List<Bookings>();
-
-
-
-           return PartialView("_MyBookings",bookings);
+            return PartialView("_MyBookings", bookings);
         }
 
         [HttpGet]
         public ActionResult GetFloorsByBuilding(int id)
         {
+            LogInformation($"Ajax call to get floors by building id '{id}'");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
             var apiGetFloors = ApiGetFloorsByBuilding(id);
 
-            if (IsTypeOfUnauthorized(apiGetFloors)) return RedirectToAction("Index");
+            if (IsTypeOfUnauthorized(apiGetFloors)) { LogWarning($"Get floors by building id '{id}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            if (!IsTypeOfJson(apiGetFloors)) return NotFound();
+            if (!IsTypeOfJson(apiGetFloors)) { LogWarning($"Get floors by building id '{id}' was not found."); return NotFound(); }
 
             var floors = ConvertToModelFloors(apiGetFloors).ToList();
 
@@ -482,31 +588,34 @@ namespace DeskShare.Controllers
         [HttpGet]
         public ActionResult GetRoomsByFloor(int id)
         {
+            LogInformation($"Ajax call to get rooms by floor id '{id}'");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+
             var apiGetRooms = ApiGetRoomsByFloor(id);
 
-            if (IsTypeOfUnauthorized(apiGetRooms)) return RedirectToAction("Index");
+            if (IsTypeOfUnauthorized(apiGetRooms)) { LogWarning($"Get rooms by floor id '{id}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            if (!IsTypeOfJson(apiGetRooms)) return NotFound();
+            if (!IsTypeOfJson(apiGetRooms)) { LogWarning($"Get rooms by floor id '{id}' was not found."); return NotFound(); }
 
             var rooms = ConvertToModelRooms(apiGetRooms).ToList();
+
             return Ok(rooms);
         }
 
-        
-
         [HttpGet]
-        public ActionResult GetAllBookings(string filterModelString)
+        public ActionResult GetLocationsAndBookings(string filterModelString)
         {
-            if (!CheckLogInStatus()) return RedirectToAction("Booking");
+            LogInformation($"Ajax call to get all locations and bookings");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            var filterModel =  JsonConvert.DeserializeObject<Filter>(filterModelString, IgnoreNullValues());
+            var filterModel = JsonConvert.DeserializeObject<Filter>(filterModelString, IgnoreNullValues());
 
 
             var apiGetBuildings = ApiGetBuildings();
 
-            if (IsTypeOfUnauthorized(apiGetBuildings)) return RedirectToAction("Index");
+            if (IsTypeOfUnauthorized(apiGetBuildings)) { LogWarning($"Get all bookings was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            if (!IsTypeOfJson(apiGetBuildings)) return NotFound();
+            if (!IsTypeOfJson(apiGetBuildings)) { LogWarning($"Get all bookings was not found."); return NotFound(); }
 
             var buildings = ConvertToModelBuildings(apiGetBuildings).ToList();
 
@@ -547,8 +656,10 @@ namespace DeskShare.Controllers
 
 
             if (!filterModel._FreeToday && !filterModel._FreeTomorrow && !filterModel._FreeWeek)
-            { return PartialView("_AllBookings",
-                    ConvertToModelViewBuilding(buildings, floors, rooms, desks, bookings));}
+            {
+                return PartialView("_AllBookings",
+                      ConvertToModelViewBuilding(buildings, floors, rooms, desks, bookings));
+            }
 
 
             var apiGetBlockedBookings = ApiGetBookings(filterModel);
@@ -564,7 +675,7 @@ namespace DeskShare.Controllers
                 desks.Remove(desks.FirstOrDefault(x => x._Id.Equals(blockedDesk)));
             }
 
-            return PartialView("_AllBookings",ConvertToModelViewBuilding(buildings, floors, rooms, desks, bookings));
+            return PartialView("_AllBookings", ConvertToModelViewBuilding(buildings, floors, rooms, desks, bookings));
         }
 
         #endregion
@@ -595,22 +706,24 @@ namespace DeskShare.Controllers
 
         private void DeleteCookie(string key)
         {
+            LogInformation($"delete cookie '{key}'");
             HttpContext.Response.Cookies.Delete(key);
         }
 
-        private void WriteCookie(string key,string value,DateTime expiration)
+        private void WriteCookie(string key, string value, DateTime expiration)
         {
+            LogInformation($"create cookie '{key}'");
             var option = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 IsEssential = true,
-                Expires =DateTime.Now.AddDays((expiration.Date-DateTime.Now.Date).Days)
+                Expires = DateTime.Now.AddDays((expiration.Date - DateTime.Now.Date).Days)
             };
             _httpContextAccessor.HttpContext.Response.Cookies.Delete(key);
             _httpContextAccessor.HttpContext.Response.Cookies.Append(key, value, option);
-            
+
         }
 
         private bool CheckAdminStatus()
@@ -619,92 +732,24 @@ namespace DeskShare.Controllers
             if (_httpContextAccessor.HttpContext.Request.Cookies["uid"] == null) return false;
             if (_httpContextAccessor.HttpContext.Request.Cookies["Tkn"] == null) return false;
 
-         var status  = GetUserPermStatus(_httpContextAccessor.HttpContext.Request.Cookies["uid"]).GetType();
+            var status = GetUserPermStatus(_httpContextAccessor.HttpContext.Request.Cookies["uid"]).GetType();
 
-         return (status!= typeof(UnauthorizedObjectResult));
+            return (status != typeof(UnauthorizedObjectResult));
 
 
 
         }
         private bool CheckLogInStatus()
         {
-            if (_httpContextAccessor.HttpContext == null) return false ;
+            if (_httpContextAccessor.HttpContext == null) return false;
             if (_httpContextAccessor.HttpContext.Request.Cookies["uid"] == null) return false;
             if (_httpContextAccessor.HttpContext.Request.Cookies["Tkn"] == null) return false;
-            
+
 
             return true;
         }
 
         #endregion
-
-        [HttpPost]
-        public IActionResult _AddDesk(string desk)
-        {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
-
-            var deskModel = JsonConvert.DeserializeObject<Desks>(desk, IgnoreNullValues());
-
-
-            var res = ApiCreateDesks(deskModel);
-
-            var resJsonResult = (JsonResult)res;
-
-            var resobj = JsonConvert.DeserializeObject<Desks>((string)resJsonResult.Value, IgnoreNullValues());
-
-
-            return PartialView("_AddBuilding",new Buildings());
-        }
-
-        [HttpPost]
-        public IActionResult _AddRoom(string room)
-        {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
-
-            var roomModel = JsonConvert.DeserializeObject<Rooms>(room, IgnoreNullValues());
-
-            var res = ApiCreateRooms(roomModel);
-
-            var resJsonResult = (JsonResult)res;
-
-            var resobj = JsonConvert.DeserializeObject<Rooms>((string)resJsonResult.Value, IgnoreNullValues());
-
-
-            return PartialView("_AddRoom",new Rooms());
-        }
-
-        [HttpPost]
-        public IActionResult _AddFloor(string floor)
-        {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
-
-            var floorModel = JsonConvert.DeserializeObject<Floors>(floor, IgnoreNullValues());
-
-            var res = ApiCreateFloors(floorModel);
-
-            var resJsonResult = (JsonResult)res;
-
-            var resobj = JsonConvert.DeserializeObject<Floors>((string)resJsonResult.Value, IgnoreNullValues());
-
-
-            return PartialView("_AddFloor",Tuple.Create(new List<Buildings>().AsEnumerable(),new Floors()));
-        }
-
-        [HttpPost]
-        public IActionResult _AddBuilding(string building)
-        {
-            if (!CheckLogInStatus()) return RedirectToAction("Index");
-
-            var buildingModel = JsonConvert.DeserializeObject<Buildings>(building, IgnoreNullValues());
-
-            var res = ApiCreateBuilding(buildingModel);
-
-            var resJsonResult = (JsonResult)res;
-
-            var resobj = JsonConvert.DeserializeObject<Buildings>((string)resJsonResult.Value, IgnoreNullValues());
-
-
-            return PartialView("_AddBuilding",new Buildings());
-        }
+            
     }
 }

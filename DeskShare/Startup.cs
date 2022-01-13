@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,9 @@ namespace DeskShare
     {
         public Startup(IConfiguration configuration)
         {
+            
+
+
             Configuration = configuration;
         }
 
@@ -25,7 +29,8 @@ namespace DeskShare
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpClient<ApiConnector>().ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler() { UseDefaultCredentials = true });
          
@@ -45,6 +50,13 @@ namespace DeskShare
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var logFactory = new LoggerFactory();
+
+            var logger = logFactory.CreateLogger<Type>();
+
+            logger.LogInformation("this is debug log from Configure");
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

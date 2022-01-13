@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj": {}
+    "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\DeskShare.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj": {
+    "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\DeskShare.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj",
+        "projectUniqueName": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\DeskShare.csproj",
         "projectName": "DeskShare",
-        "projectPath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\DeskShare.csproj",
+        "projectPath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\DeskShare.csproj",
         "packagesPath": "C:\\Users\\Office\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShare\\obj\\",
+        "outputPath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShare\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Office\\AppData\\Roaming\\NuGet\\NuGet.Config",

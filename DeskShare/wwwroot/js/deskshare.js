@@ -1,137 +1,123 @@
-﻿
+﻿//create event for toggle location and booking divs
+function addToggleEvents() {
+    //make element visible
+    var show = function (elem) {
 
+        //recursiv show call to show all invisible parent elements
+        if (elem.parentElement != null) {
+            show(elem.parentElement);
+        }
 
-function addToggleEvents(){
+        // Get the natural height of the element by show, get height and hide
+        var getHeight = function () {
+            elem.style.display = 'block';
+            var height = elem.scrollHeight + 'px';
+            elem.style.display = '';
+            return height;
+        };
 
-var show = function (elem) {
-
-    if (elem.parentElement != null) {
-        show(elem.parentElement);
-    }
-
-
-    // Get the natural height of the element
-    var getHeight = function () {
-        elem.style.display = 'block'; // Make it visible
-        var height = elem.scrollHeight + 'px'; // Get it's height
-        elem.style.display = ''; //  Hide it again
-        return height;
+        //get and update height
+        var height = getHeight();
+        elem.classList.add('is-visible');
+        elem.style.height = height;
+        elem.style.height = '';
     };
+    // make element invisible
+    var hide = function (elem) {
 
-    var height = getHeight(); // Get the natural height
-    elem.classList.add('is-visible'); // Make the element visible
-    elem.style.height = height; // Update the max-height
+        // Give the element a height to change from
+        elem.style.height = elem.scrollHeight + 'px';
 
-    elem.style.height = '';
-    // Once the transition is complete, remove the inline max-height so the content can scale responsively
-    //window.setTimeout(function () {
-        
-    //}, 0);
+        // Set the height back to 0
+        window.setTimeout(function () {
+            elem.style.height = '0';
+        }, 1);
 
-    
-   
-};
+        // When the transition is complete, hide it
+        window.setTimeout(function () {
+            elem.classList.remove('is-visible');
+        }, 0);
 
-// Hide an element
-var hide = function (elem) {
+    };
+    // Toggle element visibility
+    var toggle = function (elem) {
 
-    // Give the element a height to change from
-    elem.style.height = elem.scrollHeight + 'px';
+        // If the element is visible, hide it
+        if (elem.classList.contains('is-visible')) {
+            hide(elem);
+            return;
+        }
 
-    // Set the height back to 0
-    window.setTimeout(function () {
-        elem.style.height = '0';
-    }, 1);
+        // Otherwise, show it
+        show(elem);
 
-    // When the transition is complete, hide it
-    window.setTimeout(function () {
-        elem.classList.remove('is-visible');
-    }, 0);
+    };
+    // Listen for click events
+    document.addEventListener('click', function (event) {
 
-};
+        // Make sure clicked element have toggle class
+        if (!event.target.classList.contains('toggle')) return;
 
-// Toggle element visibility
-var toggle = function (elem, timing) {
+        // Prevent default link behavior
+        event.preventDefault();
 
-    // If the element is visible, hide it
-    if (elem.classList.contains('is-visible')) {
-        hide(elem);
-        return;
-    }
+        // Get content, return if null
+        var content = document.querySelector(event.target.hash);
+        if (!content) return;
 
-    // Otherwise, show it
-    show(elem);
-    
-};
-
-// Listen for click events
-document.addEventListener('click', function (event) {
-    console.log(event);
-    // Make sure clicked element is our toggle
-    if (!event.target.classList.contains('toggle')) return;
-
-    console.log("contains toggle");
-    // Prevent default link behavior
-    event.preventDefault();
-
-    // Get the content
-    var content = document.querySelector(event.target.hash);
-    if (!content) return;
-
-    // Toggle the content
-    toggle(content);
-}, false);
+        // Toggle the content
+        toggle(content);
+    }, false);
 }
 
-
-
-
+//Ajax call to add booking
 function createBooking(id) {
 
+    //create booking model
     var bookingModel = {
         _Start: $("#in_dateTimePicker_" + id).val(),
         _End: $("#out_dateTimePicker_" + id).val(),
         _Desk: id
     }
 
+    //pass booking model
     window.$.ajax({
-        url: window.Urls.createbookings,
+        url: window.Urls.createbookingsUrl,
         data: {
             bookingModel: bookingModel
         },
         type: "POST",
         success: function () {
-            getAllBookings();
+            GetLocationsAndBookings();
             getMyBookings();
-        }, error: {
-
+        }, error: function (xhr, status, error) {
+            alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
         }
     });
 }
+
+//Ajax call to delete booking
 function deleteBooking(id) {
 
     window.$.ajax({
-        url: window.Urls.deletebookings,
+        url: window.Urls.deletebookingsUrl,
         data: {
             id: id
         },
         type: "DELETE",
         success: function () {
-            getAllBookings();
+            GetLocationsAndBookings();
             getMyBookings();
-        }, error: {
-
+        }, error: function (xhr, status, error) {
+            alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
         }
     });
 }
 
+//Ajax call to get all locations and bookings
+function GetLocationsAndBookings() {
 
-
-
-function getAllBookings() {
-
-    console.log("getAllBookings");
-
+    //create filtermodel
     var filterModel = {
         _FreeToday: $("#cbTodayFree").prop('checked'),
         _FreeTomorrow: $("#cbTomorrowFree").prop('checked'),
@@ -146,46 +132,46 @@ function getAllBookings() {
         _ThreeScreens: $("#cbThreeScreens").prop('checked')
     }
 
-    console.log(filterModel);
-
+    //show loading spinner
     $("#loaderMain").css("display", "block");
     $("#main").css("display", "none");
-    
 
+    //ajax call
     window.$.ajax({
-        url: window.Urls.getAllbookings,
+        url: window.Urls.GetLocationsAndBookingsUrl,
         type: "GET",
-        data: { filterModelString: JSON.stringify(filterModel)},
+        data: { filterModelString: JSON.stringify(filterModel) },
         success: function (data) {
+            //pass recieved view to container
             $("#allbookings").html(data);
 
+            //hide loading spinner
             $("#loaderMain").css("display", "none");
             $("#main").css("display", "block");
-
-            console.log("getAllBookings sucess");
-        }, error: function () {
-            console.log("getMyBookings failed");
+        }, error: function (xhr, status, error) {
+            alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
         }
     });
 }
-function getMyBookings() {
-    console.log("getMyBookings");
 
+//Ajax call to get user bookings
+function getMyBookings() {
+
+    //show loading spinner
     $("#loader").css("display", "block");
-    
+
     window.$.ajax({
-        url: window.Urls.getMybookings,
+        url: window.Urls.getMybookingsUrl,
         type: "GET",
         success: function (data) {
 
+            //pass recieved view to container
             $("#lastbookings").html(data);
+
+            //hide loading spinner
             $("#loader").css("display", "none");
-                   
-            console.log("getMyBookings success");
-            console.log("data: " + data);
-            console.log("html: " + $("#lastbookings").html)
-        }, error: function() {
-            console.log("getMyBookings failed");
+        }, error: function (xhr, status, error) {
+            alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
         }
     });
 }
