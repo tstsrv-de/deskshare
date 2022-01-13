@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bLNy+L+fkfXvSqReEiG7+FmKdpbMRC9XaT9RdWWQlUhr5JZzibEoOi+L9COZHrz4GN26NNGogyjJ9MfNd9lYNQ==",
+  "dgSpecHash": "lJJyOk6EvfV/5XbvQkkON13wU++c96NnXUrS+c72HkZtkSnJ6pANLWyq4O4aM7JrYs8CQEIWu7p/49X9PWJuoA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShareApi\\DeskShareApi.csproj",
+  "projectFilePath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShareApi\\DeskShareApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Office\\.nuget\\packages\\bouncycastle.netcore\\1.8.5\\bouncycastle.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\Office\\.nuget\\packages\\google.protobuf\\3.14.0\\google.protobuf.3.14.0.nupkg.sha512",

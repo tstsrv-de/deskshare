@@ -5631,11 +5631,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShareApi\\DeskShareApi.csproj",
+      "projectUniqueName": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShareApi\\DeskShareApi.csproj",
       "projectName": "DeskShareApi",
-      "projectPath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShareApi\\DeskShareApi.csproj",
+      "projectPath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShareApi\\DeskShareApi.csproj",
       "packagesPath": "C:\\Users\\Office\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Office\\Desktop\\DockerCompose\\DeskShareApi\\obj\\",
+      "outputPath": "C:\\Users\\Office\\Desktop\\Repos\\deskshare\\DeskShareApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Office\\AppData\\Roaming\\NuGet\\NuGet.Config",

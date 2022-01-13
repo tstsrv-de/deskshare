@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = DeskShareApi
-build_property.ProjectDir = C:\Users\Office\Desktop\DockerCompose\DeskShareApi\
+build_property.ProjectDir = C:\Users\Office\Desktop\Repos\deskshare\DeskShareApi\
