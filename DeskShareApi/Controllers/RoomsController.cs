@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskShareApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace DeskShareApi.Controllers
 {
@@ -16,10 +17,11 @@ namespace DeskShareApi.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly DbContextDeskShare _context;
+        private readonly ILogger<UserController> _logger;
 
-        public RoomsController(DbContextDeskShare context)
+        public RoomsController(DbContextDeskShare context, ILogger<UserController> logger)
         {
-            _context = context;
+            _context = context; _logger = logger;
         }
 
         // GET: api/Rooms

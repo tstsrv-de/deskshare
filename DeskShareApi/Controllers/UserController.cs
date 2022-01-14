@@ -22,7 +22,25 @@ namespace DeskShareApi.Controllers
         {
             _userManager = userManager;
             _logger = logger;
+            LogInformation("open 'HomeController'");
         }
+
+        #region Logging
+
+        private void LogInformation(string message)
+        {
+            _logger.LogInformation($"{DateTime.Now} - Information:{Environment.NewLine}{message}");
+        }
+        private void LogWarning(string message)
+        {
+            _logger.LogWarning($"{DateTime.Now} - Warning:{Environment.NewLine}{message}");
+        }
+        private void LogError(string message)
+        {
+            _logger.LogError($"{DateTime.Now} - Error:{Environment.NewLine}{message}");
+        }
+
+        #endregion
 
         [HttpGet]
         [Route("perm")]
@@ -31,10 +49,11 @@ namespace DeskShareApi.Controllers
             var user = await _userManager.FindByIdAsync(uid);
             if (user._Perm)
             {
+                LogInformation($"GetPermStatus user '{uid}' got permission");
                 return Ok();
             }
 
-            _logger.LogWarning($"+++\npermission denied\n+++");
+            LogWarning($"GetPermStatus user '{uid} denied'");
             return Unauthorized();
         }
 
