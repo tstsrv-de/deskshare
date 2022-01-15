@@ -1,50 +1,87 @@
-﻿@{ Layout = "_Layout";}
+﻿@{ Layout = "";}
 
-<div class="row">
-    <div class=" col-xl-4">
-        <label for="tbUserName" class="">Username:</label>
+@*<div class="row">
+        <div class=" col-xl-4">
+            <label for="tbUserName" class="">Username:</label>
+        </div>
+        <div class=" col-xl-8">
+            <input type="text" class="form-control" id="tbUserName">
+        </div>
     </div>
-    <div class=" col-xl-8">
-        <input type="text" class="form-control" id="tbUserName">
+    <br />
+    <div class="row">
+        <div class=" col-xl-4">
+            <label for="tbPassword" class="">Password:</label>
+        </div>
+        <div class=" col-xl-8">
+            <input type="password" class="form-control" id="tbPassword">
+            <p class="alert-danger" id="unauthLabel" style="display:none">Benutzername oder Passwort nicht korrekt.</p>
+        </div>
     </div>
-</div>
-<br />
-<div class="row">
-    <div class=" col-xl-4">
-        <label for="tbPassword" class="">Password:</label>
-    </div>
-    <div class=" col-xl-8">
-        <input type="password" class="form-control" id="tbPassword">
-        <p class="alert-danger" id="unauthLabel" style="display:none">Benutzername oder Passwort nicht korrekt.</p>
-    </div>
-</div>
-<br />
-<div class="row">
-    <div class=" col-xl-4">
+    <br />
+    <div class="row">
+        <div class=" col-xl-4">
 
-    </div>
-    <div class=" col-xl-4">
-        <button id="btnLogin" onclick="login()" class="btn btn-block btn-primary">Login</button>
-    </div>
-    <div class=" col-xl-4">
+        </div>
+        <div class=" col-xl-4">
+            <button id="btnLogin" onclick="login()" class="btn btn-block btn-primary">Login</button>
+        </div>
+        <div class=" col-xl-4">
 
-    </div>
-</div>
+        </div>
+    </div>*@
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Deskshare - Raumbuchungen</title>
+
+    <script src="~/lib/jquery/dist/jquery.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/css/index.css" />
+</head>
+<body>
+    <div id="bg"></div>
+
+    <form onsubmit="login(event)">
+
+        <div class="form-field">
+            <input type="text" placeholder="Username" required id="tbUserName" />
+        </div>
+
+        <div class="form-field">
+            <input type="password" placeholder="Password" required id="tbPassword" />
+        </div>
+        <div class="form-field" id="unauthLabel" style="display:none">
+            <p class="alert-danger">Benutzername oder Passwort nicht korrekt.</p>
+        </div>
+        <div class="form-field">
+            <button class="btn" type="submit">Log in</button>
+        </div>
+    </form>
+    <!-- partial -->
+
+</body>
+</html>
+
 
 <script>
     //ajax call to login
-    function login() {
+    login =function(e) {
+        e.preventDefault();
+        console.log("login");
         $("#unauthLabel").css("display", "none");
         var model = {
             Username: window.$("#tbUserName").val(),
             Password: window.$("#tbPassword").val()
         }
-        
+
         window.$.ajax({
             url: '@Url.Action("LogIn", "Home")',
             data: { loginModel: model },
             type: "POST",
             success: function () {
+                console.log("success");
                 $(location).attr("href", "/Home/Booking");
             },
             error: function ()
@@ -54,3 +91,4 @@
         });
     }
 </script>
+

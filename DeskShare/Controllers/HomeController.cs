@@ -519,6 +519,8 @@ namespace DeskShare.Controllers
             bookingModel._Timestamp = DateTime.Now;
             bookingModel._User = _httpContextAccessor.HttpContext?.Request.Cookies["uid"]; ;
 
+            LogInformation($"Post booking on desk {bookingModel._Desk} from {bookingModel._User} from {bookingModel._Start} till {bookingModel._End}");
+
             var res = ApiCreateBooking(bookingModel);
 
             var resJsonResult = (JsonResult)res;

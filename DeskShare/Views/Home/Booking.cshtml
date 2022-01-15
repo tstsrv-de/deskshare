@@ -8,12 +8,11 @@
         getMybookingsUrl: '@Url.Action("GetMyBookings","Home")',
         GetLocationsAndBookingsUrl: '@Url.Action("GetLocationsAndBookings", "Home")',
         deleteBookingsUrl: '@Url.Action("DeleteBooking","Home")',
-        createbookingsUrl: '@Url.Action("CreateBooking","Home")'
+        createBookingsUrl: '@Url.Action("CreateBooking","Home")'
     }
 </script>
 
-<!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <title>DeskShare - Raumbuchung</title>
     <meta charset="UTF-8">
@@ -31,10 +30,10 @@
 
 </head>
 <body>
-
+    <div id="bg"></div>
     <div class="header">
         <h1>Deskshare</h1>
-        <p>Raumbuchungssystem</p>
+        <p style="color:orange;">Raumbuchung</p>
     </div>
 
     @*navbar*@
@@ -58,7 +57,7 @@
     </nav>
 
     @*maincontent*@
-    <div class="row">
+    <div id="cntRow" class="row maincontent">
         <div class="side">
             <h5 class="form-inline">Meine aktiven Buchungen:<i id="loader" class="fa fa-spinner fa-pulse fa-fw"></i></h5>
             <span id="lastbookings"></span>
@@ -67,7 +66,7 @@
             <i id="loaderMain" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
             <div id="main" style="display: none">
                 <div class="row">
-                    <a href="#filterContainer" class="toggle">Filter <i class="fa fa-filter" aria-hidden="true" style="color: orange"></i></a>
+                    <a href="#filterContainer" class="toggle" style="font-weight:bold">Filter <i class="fa fa-filter" aria-hidden="true" style="color: orange"></i></a>
                     <div id="filterContainer" class="toggle-content">
                         <div class="container row">
                             <div class="col-4"><input type="checkbox" id="cbTodayFree" /><label for="cbTodayFree">Heute frei</label></div>
@@ -92,24 +91,22 @@
                 </div>
                 <br />
                 <span id="allbookings"></span>
-
             </div>
         </div>
     </div>
-
-    <div class="footer">
-        <h2>Footer</h2>
-    </div>
-
 </body>
 </html>
 
 
 <script>
+    $(window).submit(function (e) {
+        e.preventDefault();
+    });
+
     //set all control events and get all data
-    $(window).on('load', function () {     
+    $(window).on('load', function () {
         setNavbarEvents();
-        getMyBookings();        
+        getMyBookings();
         GetLocationsAndBookings();
         addToggleEvents();
     });
@@ -118,7 +115,9 @@
     $(window).on('scroll', function () {
         var navbar = document.getElementById("navbar");
         var sticky = navbar.offsetTop;
-        if (window.pageYOffset >= sticky) {
+        console.log("navbar offset: " + navbar.offsetTop);
+        console.log("cntRow pageYOffset: " + document.getElementById("cntRow").offsetTop);
+        if (document.getElementById("cntRow").offsetTop <= sticky) {
             navbar.classList.add("sticky");
         } else {
             navbar.classList.remove("sticky");
@@ -151,7 +150,7 @@
             });
         });
     }
-    
+
 
 
 </script>

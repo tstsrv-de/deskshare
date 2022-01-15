@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DeskShareApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace DeskShareApi.Controllers
 {
@@ -22,6 +23,23 @@ namespace DeskShareApi.Controllers
         {
             _context = context; _logger = logger;
         }
+
+        #region Logging
+
+        private void LogInformation(string message)
+        {
+            _logger.LogInformation($"{DateTime.Now} - Information:{Environment.NewLine}{message}");
+        }
+        private void LogWarning(string message)
+        {
+            _logger.LogWarning($"{DateTime.Now} - Warning:{Environment.NewLine}{message}");
+        }
+        private void LogError(string message)
+        {
+            _logger.LogError($"{DateTime.Now} - Error:{Environment.NewLine}{message}");
+        }
+
+        #endregion
 
         // GET: api/Bookings
         [HttpGet]
@@ -137,6 +155,8 @@ namespace DeskShareApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Bookings>> PostBookings(Bookings bookings)
         {
+            LogInformation($"Post booking on desk {bookings._Desk} from {bookings._User} from {bookings._Start} till {bookings._End}");
+
             _context._Bookings.Add(bookings);
             await _context.SaveChangesAsync();
 

@@ -18,8 +18,8 @@ function addToggleEvents() {
 
         //get and update height
         var height = getHeight();
-        elem.classList.add('is-visible');
-        elem.style.height = height;
+        elem.classList.add('is-visible');               
+        elem.style.height = height;                   
         elem.style.height = '';
     };
     // make element invisible
@@ -70,24 +70,34 @@ function addToggleEvents() {
     }, false);
 }
 
+//split string to iso DateTime
+function createDateTimeIso(id) { 
+    var datestring = $(id).val();
+    var date = datestring.split(", ")[0];
+    var time = datestring.split(", ")[1];
+   
+    return new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2]).toISOString();
+}
+
 //Ajax call to add booking
 function createBooking(id) {
 
     //create booking model
     var bookingModel = {
-        _Start: $("#in_dateTimePicker_" + id).val(),
-        _End: $("#out_dateTimePicker_" + id).val(),
+        _Start: createDateTimeIso("#in_dateTimePicker_" + id),
+        _End: createDateTimeIso("#out_dateTimePicker_" + id),
         _Desk: id
     }
-
+    console.log(bookingModel);
     //pass booking model
     window.$.ajax({
-        url: window.Urls.createbookingsUrl,
+        url: window.Urls.createBookingsUrl,
         data: {
             bookingModel: bookingModel
         },
         type: "POST",
         success: function () {
+     
             GetLocationsAndBookings();
             getMyBookings();
         }, error: function (xhr, status, error) {
