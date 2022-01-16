@@ -26,6 +26,20 @@ body {
     height: 100%;
 }
 
+.input-group-prepend {
+    display: flex;
+    justify-content: center;
+}
+.input-group-text {
+    border-radius: 100px;
+    margin-left: 20px;
+}
+
+.roomContainer{
+    background-color:rgba(255,165,0,0.4);
+    border-radius:10px;
+    margin:5px;
+}
 
 /* Header/logo Title */
 .header {
@@ -58,7 +72,9 @@ body {
             border-radius: 10px;
         }
 
-
+.filterLabel{
+    color:orange;
+}
 /* Column container */
 .row {
     display: flex;
@@ -90,17 +106,14 @@ body {
 }
 /* Fake image, just for this example */
 .fakeimg {
-    background-color: #aaa;
+    border-radius: 10px;
+    background-color: rgba(200,200,200,0.8);
     width: 100%;
     padding: 20px;
+    margin:7px;
 }
 
-/* Footer */
-.footer {
-    padding: 20px;
-    text-align: center;
-    background: #ddd;
-}
+
 
 .container {
     display: flex; /* or inline-flex */
@@ -110,7 +123,7 @@ body {
     display: none;
     height: 0;
     overflow: hidden;
-    transition: height 100ms ease-in;
+    transition: all 0.5s ease-in-out;
 }
 
     .toggle-content.is-visible {

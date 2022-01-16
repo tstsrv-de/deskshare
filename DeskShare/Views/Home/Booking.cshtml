@@ -69,21 +69,21 @@
                     <a href="#filterContainer" class="toggle" style="font-weight:bold">Filter <i class="fa fa-filter" aria-hidden="true" style="color: orange"></i></a>
                     <div id="filterContainer" class="toggle-content">
                         <div class="container row">
-                            <div class="col-4"><input type="checkbox" id="cbTodayFree" /><label for="cbTodayFree">Heute frei</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbTomorrowFree" /><label for="cbTomorrowFree">Morgen frei</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbWeekFree" /><label for="cbWeekFree">Diese Woche frei</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbTodayFree" /><label for="cbTodayFree" class="filterLabel"> Heute frei</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbTomorrowFree" /><label for="cbTomorrowFree"class="filterLabel"> Morgen frei</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbWeekFree" /><label for="cbWeekFree"class="filterLabel"> Diese Woche frei</label></div>
                         </div>
                         <div class="container row">
-                            <div class="col-4"><input type="checkbox" id="cbMouse" /><label for="cbMouse">Maus vorhanden</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbComputer" /><label for="cbComputer">Computer vorhanden</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbDocking" /><label for="cbDocking">Dockingstation vorhanden</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbKeyboard" /><label for="cbKeyboard">Tastatur vorhanden</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbMouse" /><label for="cbMouse"class="filterLabel"> Maus vorhanden</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbComputer" /><label for="cbComputer"class="filterLabel"> Computer vorhanden</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbDocking" /><label for="cbDocking"class="filterLabel"> Dockingstation vorhanden</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbKeyboard" /><label for="cbKeyboard"class="filterLabel"> Tastatur vorhanden</label></div>
                         </div>
                         <div class="container row">
-                            <div class="col-4"><input type="checkbox" id="cbNoScreens" /><label for="cbNoScreens">ohne Bildschirm</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbOneScreens" /> <label for="cbOneScreens">1 Bildschirm</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbTwoScreens" /> <label for="cbTwoScreens">2 Bildschirme</label></div>
-                            <div class="col-4"><input type="checkbox" id="cbThreeScreens" /> <label for="cbThreeScreens">3 oder mehr Bildschirme</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbNoScreens" /><label for="cbNoScreens"class="filterLabel"> ohne Bildschirm</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbOneScreens" /> <label for="cbOneScreens"class="filterLabel"> 1 Bildschirm</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbTwoScreens" /> <label for="cbTwoScreens"class="filterLabel"> 2 Bildschirme</label></div>
+                            <div class="col-4"><input type="checkbox" id="cbThreeScreens" /> <label for="cbThreeScreens"class="filterLabel"> 3 oder mehr Bildschirme</label></div>
                         </div>
                         <div class="col-4"></div>
                         <div class="btn btn-success" onclick="GetLocationsAndBookings()">Filter anwenden</div>
@@ -111,18 +111,17 @@
         addToggleEvents();
     });
 
-    //navbar sticky scroll
-    $(window).on('scroll', function () {
-        var navbar = document.getElementById("navbar");
-        var sticky = navbar.offsetTop;
-        console.log("navbar offset: " + navbar.offsetTop);
-        console.log("cntRow pageYOffset: " + document.getElementById("cntRow").offsetTop);
-        if (document.getElementById("cntRow").offsetTop <= sticky) {
-            navbar.classList.add("sticky");
-        } else {
-            navbar.classList.remove("sticky");
-        }
-    });
+    ////navbar sticky scroll
+    //$(window).on('scroll', function () {
+    //    var navbar = document.getElementById("navbar");
+    //    var sticky = navbar.offsetTop;
+       
+    //    if (document.getElementById("cntRow").offsetTop <= sticky) {
+    //        navbar.classList.add("sticky");
+    //    } else {
+    //        navbar.classList.remove("sticky");
+    //    }
+    //});
 
     function setNavbarEvents() {
         //logout on navbar btn

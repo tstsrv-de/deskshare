@@ -36,7 +36,7 @@ function addToggleEvents() {
         // When the transition is complete, hide it
         window.setTimeout(function () {
             elem.classList.remove('is-visible');
-        }, 0);
+        }, 1);
 
     };
     // Toggle element visibility
@@ -108,9 +108,10 @@ function createBooking(id) {
 
 //Ajax call to delete booking
 function deleteBooking(id) {
+    console.log("deleteBooking " + id);
 
     window.$.ajax({
-        url: window.Urls.deletebookingsUrl,
+        url: window.Urls.deleteBookingsUrl,
         data: {
             id: id
         },

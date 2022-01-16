@@ -1,11 +1,5 @@
 ﻿@model IEnumerable<ViewBuilding>
 
-<style>
-    .orangeBorder {
-        border: 2px solid orange;
-        border-radius: 5px;
-    }
-</style>
 @foreach (var viewBuilding in Model)
 {
     if (viewBuilding._FloorsList.Count<=0)
@@ -15,7 +9,7 @@
     <div class="fakeimg">
         <a style="font-size: 24px; font-weight: bold" class=" toggle" href="#floor_container_@viewBuilding._Building._Id" id="building_@viewBuilding._Building._Id">@viewBuilding._Building._Name - @viewBuilding._Building._Location (@viewBuilding._FloorsList.Select(x => x._RoomsList.Select(x => x._DeskList.Count).Sum()).Sum())</a>
         
-        <div id="floor_container_@viewBuilding._Building._Id"  class="toggle-content orangeBorder">
+        <div id="floor_container_@viewBuilding._Building._Id"  class="toggle-content ">
 
             @foreach (var viewFloors in viewBuilding._FloorsList)
             {
@@ -24,7 +18,7 @@
                 <div class="fakeimg">
                     
                     <a style="font-size: 20px; font-weight: bold" class=" toggle" href="#room_container_@viewFloors._Floor._Id" id="floor_@viewFloors._Floor._Id">@viewFloors._Floor._Name (@viewFloors._RoomsList.Select(x => x._DeskList.Count).Sum())</a>
-                    <div id="room_container_@viewFloors._Floor._Id"class="toggle-content orangeBorder">
+                    <div id="room_container_@viewFloors._Floor._Id"class="toggle-content ">
 
 
 
@@ -32,15 +26,15 @@
                             @foreach (var viewRooms in viewFloors._RoomsList)
                             {
 
-                                <div class="col-lg-4 col-sm-12">
-                                    <div style="width: 100%" class="text-center">
+                                <div class="col-lg-4 col-sm-12 roomContainer">
+                                    <div style="width: 100%; width: 100%; margin: 5px" class="text-center">
                                         <a id="room_@viewRooms._Room._Id" href="#desk_container_@viewRooms._Room._Id" class=" toggle  font-weight-bold" style="width: 100%">@viewRooms._Room._Name (@viewRooms._DeskList.Count)</a>
                                     </div>
                                     <div id="desk_container_@viewRooms._Room._Id" class="toggle-content">
                                         @foreach (var viewDesks in viewRooms._DeskList)
                                         {
 
-                                            <div class="fakeimg orangeBorder">
+                                            <div class="fakeimg ">
                                                 <div class="input-group-prepend">
                                                     <a id="desk_@viewDesks._Desk._Id" href="#booking_container_@viewDesks._Desk._Id" class=" toggle">Tisch @viewDesks._Desk._Id - @viewDesks._Desk._Name</a>
 
@@ -101,15 +95,15 @@
                                                         if (viewBookings._End > DateTime.Now)
                                                         {
                                                             <hr style="border-top: 1px solid orange;"/>
-                                                            <div class="row text-center" id="bookingRow_@viewBookings._Id" style="background-color: lightcoral;">gebucht von @viewBookings._Start bis @viewBookings._End</div>
+                                                            <div class="row text-center" id="bookingRow_@viewBookings._Id" style="background-color: lightcoral; margin: 5px; border-radius: 5px;">gebucht von @viewBookings._Start bis @viewBookings._End</div>
                                                         }
                                                     }
                                                 </span>
 
                                                 <div id="booking_container_@viewDesks._Desk._Id" class="toggle-content">
                                                    
-                                                    <div class="row">
-                                                        <div class="col-xl-12">
+                                                    <div class="row p-3">
+                                                        <div class="col-xl-12 p-1" style="display:flex;justify-content:center">
                                                             <div class="col-xl-2">
                                                                 von:
                                                             </div>
@@ -119,7 +113,7 @@
                                                         </div>
 
 
-                                                        <div class="col-xl-12">
+                                                        <div class="col-xl-12 p-1"style="display:flex;justify-content:center">
                                                             <div class="col-xl-2">
                                                                 bis:
                                                             </div>
