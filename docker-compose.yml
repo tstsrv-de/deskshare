@@ -12,6 +12,8 @@ services:
      - ./db-dump:/docker-entrypoint-initdb.d
     ports:
     - "3306:3306"
+    environment:
+      TZ: "Europe/Berlin"
   api:
     networks:
      - max_intern
@@ -22,6 +24,8 @@ services:
       - "9978:9978"
     links:
       - database
+    environment:
+      TZ: "Europe/Berlin"
   client:
     networks:
      - tstsrv_default 
@@ -39,6 +43,8 @@ services:
       - "6443:443"
     links:
       - api
+    environment:
+      TZ: "Europe/Berlin"
 networks:
   tstsrv_default:
     external: true

@@ -18,7 +18,7 @@
                 <div class="fakeimg">
                     
                     <a style="font-size: 20px; font-weight: bold" class=" toggle" href="#room_container_@viewFloors._Floor._Id" id="floor_@viewFloors._Floor._Id">@viewFloors._Floor._Name (@viewFloors._RoomsList.Select(x => x._DeskList.Count).Sum())</a>
-                    <div id="room_container_@viewFloors._Floor._Id"class="toggle-content ">
+                    <div id="room_container_@viewFloors._Floor._Id"class="toggle-content "style="padding-left:10px">
 
 
 
@@ -26,11 +26,11 @@
                             @foreach (var viewRooms in viewFloors._RoomsList)
                             {
 
-                                <div class="col-lg-4 col-sm-12 roomContainer">
+                                <div class="col-lg-5 col-md-12 roomContainer">
                                     <div style="width: 100%; width: 100%; margin: 5px" class="text-center">
-                                        <a id="room_@viewRooms._Room._Id" href="#desk_container_@viewRooms._Room._Id" class=" toggle  font-weight-bold" style="width: 100%">@viewRooms._Room._Name (@viewRooms._DeskList.Count)</a>
+                                        <a id="room_@viewRooms._Room._Id" href="#desk_container_@viewRooms._Room._Id" class=" toggle  font-weight-bold" style="width: 100%; ">@viewRooms._Room._Name (@viewRooms._DeskList.Count)</a>
                                     </div>
-                                    <div id="desk_container_@viewRooms._Room._Id" class="toggle-content">
+                                    <div id="desk_container_@viewRooms._Room._Id" class="toggle-content"style="padding-right: 15px;">
                                         @foreach (var viewDesks in viewRooms._DeskList)
                                         {
 
@@ -38,45 +38,47 @@
                                                 <div class="input-group-prepend">
                                                     <a id="desk_@viewDesks._Desk._Id" href="#booking_container_@viewDesks._Desk._Id" class=" toggle">Tisch @viewDesks._Desk._Id - @viewDesks._Desk._Name</a>
 
-                                                    <span class="input-group-text" data-placement="left" rel="pop_Details_@viewDesks._Desk._Id"><i class="fa fa-info" aria-hidden="true" style="color: orange"></i></span>
-                                                    <div id="pop_Details_@viewDesks._Desk._Id" style="display: none;">
-                                                        <ul>
-                                                            @if (viewDesks._Desk._Computer)
-                                                            {
-                                                                <li>Computer <i class="fa fa-check-square-o"></i></li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li>Computer <i class="fa fa-square-o"></i></li>
-                                                            }
-                                                            @if (viewDesks._Desk._Docking)
-                                                            {
-                                                                <li>Docking Station <i class="fa fa-check-square-o"></i></li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li>Docking Station <i class="fa fa-square-o"></i></li>
-                                                            }
-                                                            @if (viewDesks._Desk._Mouse)
-                                                            {
-                                                                <li>Maus <i class="fa fa-check-square-o"></i></li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li>Maus <i class="fa fa-square-o"></i></li>
-                                                            }
-                                                            @if (viewDesks._Desk._Keyboard)
-                                                            {
-                                                                <li>Tastatur <i class="fa fa-check-square-o"></i></li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li>Tastatur <i class="fa fa-square-o"></i></li>
-                                                            }
+                                                    <span class="input-group-text" data-placement="right" rel="pop_Details_@viewDesks._Desk._Id"><i class="fa fa-info" aria-hidden="true" style="color: orange"></i></span>
+                                                    <div id="pop_Details_@viewDesks._Desk._Id" style="display: none;" >
+                                                        <div>
+                                                            <ul>
+                                                                @if (viewDesks._Desk._Computer)
+                                                                {
+                                                                    <li>Computer <i class="fa fa-check-square-o"></i></li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>Computer <i class="fa fa-square-o"></i></li>
+                                                                }
+                                                                @if (viewDesks._Desk._Docking)
+                                                                {
+                                                                    <li>Docking Station <i class="fa fa-check-square-o"></i></li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>Docking Station <i class="fa fa-square-o"></i></li>
+                                                                }
+                                                                @if (viewDesks._Desk._Mouse)
+                                                                {
+                                                                    <li>Maus <i class="fa fa-check-square-o"></i></li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>Maus <i class="fa fa-square-o"></i></li>
+                                                                }
+                                                                @if (viewDesks._Desk._Keyboard)
+                                                                {
+                                                                    <li>Tastatur <i class="fa fa-check-square-o"></i></li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>Tastatur <i class="fa fa-square-o"></i></li>
+                                                                }
 
-                                                            <li>Bildschirme: @viewDesks._Desk._Screens</li>
+                                                                <li>Bildschirme: @viewDesks._Desk._Screens</li>
 
-                                                        </ul>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <script>
@@ -95,7 +97,7 @@
                                                         if (viewBookings._End > DateTime.Now)
                                                         {
                                                             <hr style="border-top: 1px solid orange;"/>
-                                                            <div class="row text-center" id="bookingRow_@viewBookings._Id" style="background-color: lightcoral; margin: 5px; border-radius: 5px;">gebucht von @viewBookings._Start bis @viewBookings._End</div>
+                                                            <div class="text-center" id="bookingRow_@viewBookings._Id" style="background-color: lightcoral; margin: 5px; border-radius: 5px;">gebucht von @viewBookings._Start.ToString("dd.MM.yyyy HH:mm") Uhr bis @viewBookings._End.ToString("dd.MM.yyyy HH:mm") Uhr</div>
                                                         }
                                                     }
                                                 </span>

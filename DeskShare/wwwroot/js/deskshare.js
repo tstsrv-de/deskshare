@@ -71,16 +71,22 @@ function addToggleEvents() {
 }
 
 //split string to iso DateTime
-function createDateTimeIso(id) { 
+function createDateTimeIso(id) {
+    console.log("createDateTimeIso");
     var datestring = $(id).val();
+  
     var date = datestring.split(", ")[0];
     var time = datestring.split(", ")[1];
-   
-    return new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2]).toISOString();
+
+    var d = new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2], 0);
+    return new Date(d.toISOString().replace("Z", "-01:00")).toISOString().replace(".000", "");
+
+   // return new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2],0).toISOString();
 }
 
 //Ajax call to add booking
 function createBooking(id) {
+    console.log("createBooking");
 
     //create booking model
     var bookingModel = {
@@ -88,7 +94,7 @@ function createBooking(id) {
         _End: createDateTimeIso("#out_dateTimePicker_" + id),
         _Desk: id
     }
-    console.log(bookingModel);
+
     //pass booking model
     window.$.ajax({
         url: window.Urls.createBookingsUrl,
