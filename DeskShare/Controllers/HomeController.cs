@@ -272,6 +272,14 @@ namespace DeskShare.Controllers
             return Api_GetRecords(apiUrl).Result;
         }
 
+        private ActionResult ApiCheckBooking(DateTime start, DateTime end,int desk)
+        {
+            LogInformation($"check booking between '{start}' & '{end}'");
+            var apiUrl = $"api/Bookings/CheckBooking?start={start}&end={end}&desk={desk}";
+
+            return Api_GetRecords(apiUrl).Result;
+        }
+        
         private ActionResult ApiDeleteBooking(int id, string uid)
         {
             LogInformation($"User '{uid}' delete booking '{id}'");
@@ -458,6 +466,12 @@ namespace DeskShare.Controllers
             return JsonConvert.DeserializeObject<IEnumerable<Bookings>>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
         }
 
+        private static bool ConvertToBool(ActionResult apiResult)
+        {
+            return JsonConvert.DeserializeObject<bool>((string)((JsonResult)apiResult).Value, IgnoreNullValues());
+        }
+
+
         private static string SplitFilterToDeskArguments(Filter filterModel)
         {
             var resultString = $"?mouse={filterModel._Mouse}" +
@@ -516,6 +530,15 @@ namespace DeskShare.Controllers
         {
             LogInformation($"Ajax call to create booking for user '{bookingModel._User}' in desk '{bookingModel._Desk}'");
             if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            var checkApiResult = ApiCheckBooking(bookingModel._Start, bookingModel._End,bookingModel._Desk);
+            if (IsTypeOfUnauthorized(checkApiResult)) { LogWarning($"CheckBooking was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!IsTypeOfJson(checkApiResult)) { LogWarning($"CheckBooking was not found."); return NotFound(); }
+                        
+            if (!ConvertToBool(checkApiResult))
+            {
+                return BadRequest("Der Buchungszeitraum überschneidet sich mit einem bereits gebuchten Zeitraum.");
+            }
 
             bookingModel._Timestamp = DateTime.Now;
             bookingModel._User = _httpContextAccessor.HttpContext?.Request.Cookies["uid"]; ;

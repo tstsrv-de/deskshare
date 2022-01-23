@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using DeskShareApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace DeskShareApi.Controllers
 {
@@ -23,13 +24,30 @@ namespace DeskShareApi.Controllers
             _logger = logger;
         }
 
+        #region Logging
+
+        private void LogInformation(string message)
+        {
+            _logger.LogInformation($"{DateTime.Now} - Information:{Environment.NewLine}{message}");
+        }
+        private void LogWarning(string message)
+        {
+            _logger.LogWarning($"{DateTime.Now} - Warning:{Environment.NewLine}{message}");
+        }
+        private void LogError(string message)
+        {
+            _logger.LogError($"{DateTime.Now} - Error:{Environment.NewLine}{message}");
+        }
+
+        #endregion
+
         // GET: api/Buildings
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Buildings>>> Get_Buildings()
         {
-            _logger.LogInformation("Get_Buildings:");
+            LogInformation("Get all buildings");
             var buildings= await _context._Buildings.OrderBy(x => x._Order).ToListAsync();
-            _logger.LogInformation($"{buildings.Count()} rows found");
+            LogInformation($"{buildings.Count()} buildings found");
             return buildings;
         }
             
@@ -37,10 +55,12 @@ namespace DeskShareApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Buildings>> GetBuildings(int id)
         {
+            LogInformation($"Get building '{id}'");
             var buildings = await _context._Buildings.FindAsync(id);
 
             if (buildings == null)
             {
+                LogWarning($"building '{id}' not found");
                 return NotFound();
             }
 
@@ -52,8 +72,10 @@ namespace DeskShareApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBuildings(int id, Buildings buildings)
         {
+            LogInformation($"edit building '{id}'");
             if (id != buildings._Id)
             {
+                LogWarning($"building id '{id}' could not be changed");
                 return BadRequest();
             }
 
@@ -62,9 +84,11 @@ namespace DeskShareApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                LogInformation($"building '{id}' changed");
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
+                LogWarning($"DbUpdateConcurrencyException {e.Message}");
                 if (!BuildingsExists(id))
                 {
                     return NotFound();
@@ -83,9 +107,10 @@ namespace DeskShareApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Buildings>> PostBuildings(Buildings buildings)
         {
+            LogInformation($"create building '{buildings._Name}'");
             _context._Buildings.Add(buildings);
             await _context.SaveChangesAsync();
-
+            LogInformation($"saved new building '{buildings._Name}'");
             return CreatedAtAction("GetBuildings", new { id = buildings._Id }, buildings);
         }
 
@@ -93,15 +118,17 @@ namespace DeskShareApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBuildings(int id)
         {
+            LogInformation($"delete building '{id}'");
             var buildings = await _context._Buildings.FindAsync(id);
             if (buildings == null)
             {
+                LogWarning($"building '{id}' not found");
                 return NotFound();
             }
 
             _context._Buildings.Remove(buildings);
             await _context.SaveChangesAsync();
-
+            LogInformation($"deleted building '{id}'");
             return NoContent();
         }
 

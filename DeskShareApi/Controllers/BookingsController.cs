@@ -41,6 +41,25 @@ namespace DeskShareApi.Controllers
 
         #endregion
 
+        //GET: CheckBlock
+        [HttpGet]
+        [Route("CheckBooking")]
+        public  ActionResult<bool> CheckBooking(DateTime start, DateTime end,int desk)
+        {
+            LogInformation($"check booking between '{start}' & '{end}'");
+            var rtn =  _context._Bookings.Where(x=>x._Desk.Equals(desk)&&((start <= x._Start && end <= x._End && end >= x._Start) ||
+            (start >= x._Start && start <= x._End && end >= x._End) ||
+            (start >= x._Start && end <= x._End) ||
+            (start <= x._Start && end >= x._End))); 
+            if (rtn.Any())
+            {
+                LogInformation("Booking span blocked!");
+                return Ok(false);
+            }
+            LogInformation("Booking span free");
+            return Ok(true);
+        }
+
         // GET: api/Bookings
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bookings>>> Get_Bookings(bool freetoday,bool freetomorrow,bool freeweek)
@@ -53,17 +72,38 @@ namespace DeskShareApi.Controllers
             //Gegenteil auswählen um eine Ebene tiefer Desks auszusortieren
             if (freetoday)
             {
-             
-                var rtn= await _context._Bookings.Where(x=> x._Start.DayOfYear <= DateTime.Now.DayOfYear && DateTime.Now.DayOfYear<= x._End.DayOfYear).OrderBy(x => x._End).ToListAsync();
+                var dtn = DateTime.Now;
+                var start = new DateTime(dtn.Year, dtn.Month, dtn.Day, 0, 0, 0);
+                var end = new DateTime(dtn.Year, dtn.Month, dtn.Day, 23, 59, 59);
+
+                var rtn= await _context._Bookings.Where(x => (start <= x._Start && end <= x._End && end >= x._Start) ||
+            (start >= x._Start && start <= x._End && end >= x._End) ||
+            (start >= x._Start && end <= x._End) ||
+            (start <= x._Start && end >= x._End)).ToListAsync();
                 return rtn;
 
             }
             if (freetomorrow)
             {
-                var rtn2 = await _context._Bookings.Where(x => x._Start.AddDays(1) <= DateTime.Now.AddDays(1) && x._End.AddDays(1) >= DateTime.Now.AddDays(1)).OrderBy(x => x._End).ToListAsync();
+                var dtn2 = DateTime.Now;
+                var start2 = new DateTime(dtn2.Year, dtn2.Month, dtn2.Day+1, 0, 0, 0);
+                var end2 = new DateTime(dtn2.Year, dtn2.Month, dtn2.Day+1, 23, 59, 59);
+
+                var rtn2 = await _context._Bookings.Where(x => (start2 <= x._Start && end2 <= x._End && end2 >= x._Start) ||
+             (start2 >= x._Start && start2 <= x._End && end2 >= x._End) ||
+             (start2 >= x._Start && end2 <= x._End) ||
+             (start2 <= x._Start && end2 >= x._End)).ToListAsync();
                 return rtn2;
             }
-            var rtn3 = await _context._Bookings.Where(x => x._Start <= DateTime.Now && x._End  >= DateTime.Now.AddDays(7)).OrderBy(x => x._End).ToListAsync();
+            var dtn3 = DateTime.Now;
+            var start3 = new DateTime(dtn3.Year, dtn3.Month, dtn3.Day, 0, 0, 0);
+            var dow3 = (int)DateTime.Now.DayOfWeek;
+            var end3 = new DateTime(dtn3.Year, dtn3.Month,dtn3.Day+(7-dow3), 23, 59, 59);
+
+            var rtn3 = await _context._Bookings.Where(x => (start3 <= x._Start && end3 <= x._End && end3 >= x._Start) ||
+         (start3 >= x._Start && start3 <= x._End && end3 >= x._End) ||
+         (start3 >= x._Start && end3 <= x._End) ||
+         (start3 <= x._Start && end3 >= x._End)).ToListAsync();
             return rtn3;
         }
 

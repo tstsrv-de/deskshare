@@ -2,7 +2,7 @@
 
 <script src="~/js/deskshare.js" type="text/javascript"></script>
 
-@foreach (var booking in Model)
+@foreach (var booking in Model.OrderBy(x=>x._Start))
 {
    
     

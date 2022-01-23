@@ -74,19 +74,23 @@ function addToggleEvents() {
 function createDateTimeIso(id) {
     console.log("createDateTimeIso");
     var datestring = $(id).val();
-  
+    console.log(datestring);
     var date = datestring.split(", ")[0];
     var time = datestring.split(", ")[1];
-
-    var d = new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2], 0);
-    return new Date(d.toISOString().replace("Z", "-01:00")).toISOString().replace(".000", "");
+    console.log(date);
+    console.log(time);
+    var d = new Date(date.split("-")[2], date.split("-")[1]-1, date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2], 0);
+    var nd = new Date(d.toISOString().replace("Z", "-01:00")).toISOString().replace(".000", "");
+    console.log(d);
+    console.log(nd);
+    return nd;
 
    // return new Date(date.split("-")[2], date.split("-")[1], date.split("-")[0], time.split(":")[0], time.split(":")[1], time.split(":")[2],0).toISOString();
 }
 
 //Ajax call to add booking
 function createBooking(id) {
-    console.log("createBooking");
+    $("#blockedContainer_" + id).css("display", "none");
 
     //create booking model
     var bookingModel = {
@@ -107,7 +111,7 @@ function createBooking(id) {
             GetLocationsAndBookings();
             getMyBookings();
         }, error: function (xhr, status, error) {
-            alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
+            $("#blockedContainer_" + id).css("display", "block");
         }
     });
 }

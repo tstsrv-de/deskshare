@@ -23,30 +23,81 @@ namespace DeskShareApi.Controllers
             _context = context; _logger = logger;
         }
 
+        #region Logging
+
+        private void LogInformation(string message)
+        {
+            _logger.LogInformation($"{DateTime.Now} - Information:{Environment.NewLine}{message}");
+        }
+        private void LogWarning(string message)
+        {
+            _logger.LogWarning($"{DateTime.Now} - Warning:{Environment.NewLine}{message}");
+        }
+        private void LogError(string message)
+        {
+            _logger.LogError($"{DateTime.Now} - Error:{Environment.NewLine}{message}");
+        }
+
+        #endregion
+
+
         // GET: api/Desks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Desks>>> Get_Desks(bool mouse, bool keyboard, bool computer, bool docking, bool noscreen, bool onescreen, bool twoscreens, bool threescreens)
         {
+             
+
             if (!mouse&&!keyboard&&!computer&&!docking&&!noscreen&&!onescreen&&!twoscreens&&!threescreens)
             {
+                LogInformation("get all desks without filter");
                 return await _context._Desks.OrderBy(x => x._Order).ToListAsync();
             }
 
-            var screenCount = 0;
-            if(onescreen) screenCount = 1;
-            if(twoscreens) screenCount = 2;
-            if(threescreens) screenCount = 3;
-            return await _context._Desks.Where(x=>x._Mouse.Equals(mouse)||x._Keyboard.Equals(keyboard) || x._Computer.Equals(computer) || x._Docking.Equals(docking) || x._Screens>= screenCount).OrderBy(x => x._Order).ToListAsync();
+            LogInformation($"get all desks with filter: mouse:{mouse}, keyboard:{keyboard}, computer:{computer}, docking:{docking}, noscreen:{noscreen}, onescreen:{onescreen}, twoscreens:{twoscreens}, threescreens:{threescreens}");
+
+            var desks = _context._Desks.AsQueryable();
+            if (mouse)
+            {
+                desks =  desks.Where(x => x._Mouse.Equals(mouse));
+            }
+            if (keyboard)
+            {
+                desks = desks.Where(x => x._Keyboard.Equals(keyboard));
+            }
+            if (computer)
+            {
+                desks = desks.Where(x => x._Computer.Equals(computer));
+            }
+            if (docking)
+            {
+                desks = desks.Where(x => x._Docking.Equals(docking));
+            }
+            if (onescreen)
+            {
+                desks = desks.Where(x => x._Screens.Equals(1));
+            }
+            if (twoscreens)
+            {
+                desks = desks.Where(x => x._Screens.Equals(2));
+            }
+            if (threescreens)
+            {
+                desks = desks.Where(x => x._Screens>=3);
+            }
+          
+            return await desks.ToListAsync();
         }
 
         // GET: api/Desks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Desks>> GetDesks(int id)
         {
+            LogInformation($"get desk '{id}'");
             var desks = await _context._Desks.FindAsync(id);
 
             if (desks == null)
             {
+                LogWarning($"desk '{id}' not found");
                 return NotFound();
             }
 
@@ -57,10 +108,12 @@ namespace DeskShareApi.Controllers
         [Route("byRoom")]
         public async Task<ActionResult<Desks>> GetDesksByRoom(int id)
         {
+            LogInformation($"get desks by room '{id}'");
             var desks = await _context._Desks.Where(x=>x._RoomId.Equals(id)).ToListAsync();
 
             if (desks == null)
             {
+                LogWarning($"desks by room '{id}' not found");
                 return NotFound();
             }
 
@@ -72,8 +125,10 @@ namespace DeskShareApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDesks(int id, Desks desks)
         {
+            LogInformation($"edit desk '{id}'");
             if (id != desks._Id)
             {
+                LogError($"desk '{id}' not found");
                 return BadRequest();
             }
 
@@ -82,9 +137,11 @@ namespace DeskShareApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                LogInformation($"desk '{id}' edited and saved");
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
+                LogError($"error by editing desk '{id}': {e.Message}");
                 if (!DesksExists(id))
                 {
                     return NotFound();
@@ -103,6 +160,7 @@ namespace DeskShareApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Desks>> PostDesks(Desks desks)
         {
+            LogInformation($"create desk '{desks._Name}'");
             _context._Desks.Add(desks);
             await _context.SaveChangesAsync();
 
@@ -113,15 +171,17 @@ namespace DeskShareApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDesks(int id)
         {
+            LogInformation($"delete desk '{id}'");
             var desks = await _context._Desks.FindAsync(id);
             if (desks == null)
             {
+                LogWarning($"desk '{id}' not found");
                 return NotFound();
             }
 
             _context._Desks.Remove(desks);
             await _context.SaveChangesAsync();
-
+            LogInformation($"deleted desk '{id}'");
             return NoContent();
         }
 
