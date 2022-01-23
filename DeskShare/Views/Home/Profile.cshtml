@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Bookings>
+@{ Layout = "_Layout";}
+
+<div class="main">
+    <i id="loaderMain" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+    <div class="row">
+        <div class="col-xl-4 col-md-12">
+            <h4 style="color:white">Meine Tische</h4>
+            <table id="countTable">
+                <tr>
+                    <th>Tisch ID</th>
+                    <th>Anzahl der Buchungen</th>
+                    <th></th>
+                </tr>
+                @foreach (var book in Model.GroupBy(x => x._Desk).Select(y => new { Desk = (int)y.Key, Buchungen = (int)y.Count() }).OrderByDescending(c => c.Buchungen).ToList())
+                {
+                    <tr>
+                        <td>@book.Desk </td>
+                        <td> @book.Buchungen</td>
+                        <td> <a class="btn btn-success" href="#booking_container_@book.Desk">Tisch öffnen</a></td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-xl-8 col-md-12">
+            <h4 style="color:white">Meine Buchungen</h4>
+            <table id="countTable">
+                <tr>
+                    <th>Tisch</th>
+                    <th>Zeitpunkt</th>
+                    <th>Start</th>
+                    <th>Ende</th>
+                    <th></th>
+                </tr>
+                @foreach (var book in Model.OrderByDescending(x => x._Timestamp))
+                {
+                    <tr>
+                        <td>@book._Desk </td>
+                        <td> @book._Timestamp.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td> @book._Start.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td> @book._End.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td> <a class="btn btn-success toggle"  href="#booking_container_@book._Desk">Tisch öffnen</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+    </div>
+    <br />
+    <span id="allbookings"></span>
+</div>
+
+<style>
+    #countTable {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #countTable td, #countTable th {
+            border: 1px solid #ddd;
+            text-align: center;
+            color: white;
+            padding: 8px;
+        }
+
+
+        #countTable tr:hover {
+            background-color: rgba(255,165,0,0.4);
+            color: black;
+        }
+
+        #countTable th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: orange;
+            color: white;
+        }
+</style>
+<script>
+    function timeRefresh(time) {
+        setTimeout("location.reload(true);", time);
+    }
+</script>

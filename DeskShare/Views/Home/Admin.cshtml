@@ -1,8 +1,8 @@
-﻿
+﻿@{ Layout = "_Layout";}
 @model IEnumerable<Buildings>
-    <div>
-        <a asp-action="Booking">Zurück</a>
-    </div>
+<div>
+    <a asp-action="Booking">Zurück</a>
+</div>
 <span id="_AddBuildingSpan">
     @await Html.PartialAsync("_AddBuilding", new Buildings())
 </span>
@@ -22,6 +22,9 @@
     <a asp-action="Booking">Zurück</a>
 </div>
 <script>
+    $(window).on('load', function () {
+        setNavbarEvents();
+    });
 
     var Urls =
     {
@@ -132,7 +135,7 @@
 
                 window.$.each(data,
                     function (i, item) {
-                   
+
                         window.$("#ddFloor").append(window.$("<option></option>").attr("value", item._Id).text(item._Name));
 
                     });

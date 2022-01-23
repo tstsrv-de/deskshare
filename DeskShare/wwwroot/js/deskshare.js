@@ -163,6 +163,7 @@ function GetLocationsAndBookings() {
         type: "GET",
         data: { filterModelString: JSON.stringify(filterModel) },
         success: function (data) {
+
             //pass recieved view to container
             $("#allbookings").html(data);
 
@@ -194,5 +195,46 @@ function getMyBookings() {
         }, error: function (xhr, status, error) {
             alert("Es ist ein Fehler aufgetreten: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
         }
+    });
+}
+
+function setNavbarEvents() {
+    //logout on navbar btn
+    $("#navLogout").on("click", function () {
+        window.$.ajax({
+            url: window.Urls.logoutUrl,
+            type: "GET",
+            success: function () {
+                $(location).attr("href", "/Home/Index");
+            }
+        });
+    });
+
+    //open adminform on navbar btn
+    $("#navAdmin").click(function () {
+        window.$.ajax({
+            url: window.Urls.adminUrl,
+            type: "GET",
+            success: function () {
+                $(location).attr("href", "/Home/Admin");
+            },
+            error: function () {
+                alert("Unzureichende Berechtigung");
+            }
+        });
+    });
+
+    //open profileform on navbar btn
+    $("#navBookings").click(function () {
+       
+                $(location).attr("href", "/Home/Profile");
+    
+    });//navStart
+
+    //open Bookingform on navbar btn
+    $("#navStart").click(function () {
+
+        $(location).attr("href", "/Home/Booking");
+
     });
 }

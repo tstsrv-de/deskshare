@@ -124,9 +124,19 @@ namespace DeskShareApi.Controllers
         // GET: api/Bookings/byUser?id=xxxxxx&status=true
         [HttpGet]
         [Route("byUser")]
-        public async Task<ActionResult<IEnumerable<Bookings>>> GetBookingsByUser(string id)
+        public async Task<ActionResult<IEnumerable<Bookings>>> GetBookingsByUser(string id,bool all)
         {
-           
+            if (all)
+            {
+                var bookingsAll = await _context._Bookings.Where(x => x._User.Equals(id)).ToListAsync();
+
+                if (bookingsAll == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(bookingsAll);
+            }
                 var bookings = await _context._Bookings.Where(x => x._User.Equals(id) && x._End > DateTime.Now).ToListAsync() ;
             
             

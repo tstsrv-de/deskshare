@@ -264,10 +264,10 @@ namespace DeskShare.Controllers
             return Api_GetRecords(apiUrl).Result;
         }
 
-        private ActionResult ApiGetBookingsByUser(string id)
+        private ActionResult ApiGetBookingsByUser(string id,bool all)
         {
             LogInformation($"get all bookings by user id '{id}'");
-            var apiUrl = $"api/Bookings/byUser?id={id}";
+            var apiUrl = $"api/Bookings/byUser?id={id}&all={all}";
 
             return Api_GetRecords(apiUrl).Result;
         }
@@ -325,6 +325,24 @@ namespace DeskShare.Controllers
             var buildings = ConvertToModelBuildings(apiGetBuildings);
 
             return View(buildings);
+        }
+
+        public ActionResult Profile()
+        {
+            LogInformation($"Redirect to /Profile");
+            if (!CheckLogInStatus())
+            {
+                LogWarning($"User check not passed. Redirect to /Profile");
+                return RedirectToAction("Index");
+            }
+
+            var apiGetBookings = ApiGetBookingsByUser(_httpContextAccessor.HttpContext?.Request.Cookies["uid"],true);
+
+            if (IsTypeOfUnauthorized(apiGetBookings)) { LogWarning($"Get bookings for '{_httpContextAccessor.HttpContext?.Request.Cookies["uid"]}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            var bookings = IsTypeOfJson(apiGetBookings) ? ConvertToModelBookings(apiGetBookings).ToList() : new List<Bookings>();
+
+            return View(bookings);
         }
 
         [HttpPost]
@@ -585,7 +603,7 @@ namespace DeskShare.Controllers
             LogInformation($"Ajax call to get bookings for user '{_httpContextAccessor.HttpContext?.Request.Cookies["uid"]}'");
             if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            var apiGetBookings = ApiGetBookingsByUser(_httpContextAccessor.HttpContext?.Request.Cookies["uid"]);
+            var apiGetBookings = ApiGetBookingsByUser(_httpContextAccessor.HttpContext?.Request.Cookies["uid"],false);
 
             if (IsTypeOfUnauthorized(apiGetBookings)) { LogWarning($"Get bookings for '{_httpContextAccessor.HttpContext?.Request.Cookies["uid"]}' was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
