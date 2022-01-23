@@ -11,8 +11,6 @@ services:
      - ./db-dump:/docker-entrypoint-initdb.d
     ports:
     - "3306:3306"
-    environment:
-      TZ: "Europe/Berlin"
   api:  
     build: ./DeskShareApi
     container_name: dsapi
@@ -21,8 +19,6 @@ services:
       - "9978:9978"
     links:
       - database
-    environment:
-      TZ: "Europe/Berlin"
   client:  
     build: ./DeskShare
     container_name: dsclient
