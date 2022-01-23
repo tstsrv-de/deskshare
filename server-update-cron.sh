@@ -13,12 +13,13 @@ then
     git -C /home/rjhadmin/deskshare/ pull >> /home/rjhadmin/deskshare_cronlog.txt
     chmod +x /home/rjhadmin/deskshare/*.sh >> /home/rjhadmin/deskshare_cronlog.txt
     docker-compose --project-directory /home/rjhadmin/deskshare/ build api >> /home/rjhadmin/deskshare_cronlog.txt
+	sleep 20
     docker-compose --project-directory /home/rjhadmin/deskshare/ build client >> /home/rjhadmin/deskshare_cronlog.txt
-    sleep 5
+    sleep 20
     docker-compose --project-directory /home/rjhadmin/deskshare/ up -d >> /home/rjhadmin/deskshare_cronlog.txt
-    sleep 2
+    sleep 5
     docker-compose --project-directory /home/rjhadmin/deskshare/ stop api >> /home/rjhadmin/deskshare_cronlog.txt
-    sleep 1
+    sleep 5
     docker-compose --project-directory /home/rjhadmin/deskshare/ up -d api >> /home/rjhadmin/deskshare_cronlog.txt    
     # echo "$now --> deskshare update > Update done!"
 else
