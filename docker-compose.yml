@@ -22,6 +22,8 @@ services:
       - "9978:9978"
     links:
       - database
+    depends_on:
+      - database
   client:
     networks:
      - tstsrv_default 
@@ -38,6 +40,8 @@ services:
       - "6080:80"
       - "6443:443"
     links:
+      - api
+    depends_on:
       - api
     environment:
       TZ: "Europe/Berlin"
