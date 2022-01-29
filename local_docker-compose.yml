@@ -17,11 +17,11 @@ services:
     ports:
       - "9977:9977"
       - "9978:9978"
+    command: ["./wait-for-it.sh", "database:3306", "--", "dotnet", "DeskShareApi.dll"]
     links:
       - database
     depends_on:
       - database
-    command: ["./wait-for-db.sh", "database:9977", "--", "python", "app.py"]
   client:  
     build: ./DeskShare
     container_name: dsclient

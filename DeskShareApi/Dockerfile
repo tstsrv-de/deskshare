@@ -18,4 +18,10 @@ RUN dotnet publish "DeskShareApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DeskShareApi.dll"]
+
+COPY wait-for-it.sh /app/wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+
+
+
+
