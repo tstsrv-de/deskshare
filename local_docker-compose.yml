@@ -21,6 +21,7 @@ services:
       - database
     depends_on:
       - database
+    command: ["./wait-for-db.sh", "database:9977", "--", "python", "app.py"]
   client:  
     build: ./DeskShare
     container_name: dsclient
