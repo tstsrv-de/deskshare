@@ -40,6 +40,7 @@ services:
     ports:
       - "6080:80"
       - "6443:443"
+    command: ["./wait-for-it.sh", "api:80", "--", "dotnet", "DeskShare.dll"]
     links:
       - api
     depends_on:
