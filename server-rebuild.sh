@@ -12,10 +12,6 @@ git -C /home/rjhadmin/deskshare/ pull
 #docker system prune -a --volumes
 #docker-compose --project-directory /home/rjhadmin/deskshare/ build --no-cache
 
-
-docker-compose --project-directory /home/rjhadmin/deskshare/ stop api
-docker-compose --project-directory /home/rjhadmin/deskshare/ up -d api
-sleep 10
 docker-compose --project-directory /home/rjhadmin/deskshare/ build 
 docker-compose --project-directory /home/rjhadmin/deskshare/ up -d
     
