@@ -28,18 +28,18 @@ services:
   client:
     networks:
      - tstsrv_default 
-     - max_intern 
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
-      - traefik.http.routers.deskshare.entrypoints=https
-      - traefik.http.routers.deskshare.tls=true
-      - traefik.http.routers.deskshare.tls.certresolver=letsencrypt     
+     - max_intern        
     build: ./DeskShare
     container_name: dsclient
     ports:
       - "6080:80"
       - "6443:443"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
+      - traefik.http.routers.deskshare.entrypoints=https
+      - traefik.http.routers.deskshare.tls=true
+      - traefik.http.routers.deskshare.tls.certresolver=letsencrypt 
     command: ["./wait-for-it.sh", "api:80", "--", "dotnet", "DeskShare.dll"]
     links:
       - api
