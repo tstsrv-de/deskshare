@@ -38,8 +38,8 @@ services:
     build: ./DeskShare
     container_name: dsclient
     ports:
-      - "7080:80"
-      - "7443:443"
+      - "6080:80"
+      - "6443:443"
     command: ["./wait-for-it.sh", "api:80", "--", "dotnet", "DeskShare.dll"]
     links:
       - api
