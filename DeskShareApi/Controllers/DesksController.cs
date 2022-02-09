@@ -123,26 +123,22 @@ namespace DeskShareApi.Controllers
         // PUT: api/Desks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDesks(int id, Desks desks)
+        public async Task<IActionResult> PutDesks( Desks desks)
         {
-            LogInformation($"edit desk '{id}'");
-            if (id != desks._Id)
-            {
-                LogError($"desk '{id}' not found");
-                return BadRequest();
-            }
+            LogInformation($"edit desk '{desks._Id}'");
+           
 
             _context.Entry(desks).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                LogInformation($"desk '{id}' edited and saved");
+                LogInformation($"desk '{desks._Id}' edited and saved");
             }
             catch (DbUpdateConcurrencyException e)
             {
-                LogError($"error by editing desk '{id}': {e.Message}");
-                if (!DesksExists(id))
+                LogError($"error by editing desk '{desks._Id}': {e.Message}");
+                if (!DesksExists(desks._Id))
                 {
                     return NotFound();
                 }

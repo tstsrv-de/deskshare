@@ -101,7 +101,7 @@ namespace DeskShare.Controllers
             LogInformation($"successfully deleted data from {apiUrl}");
             return Json(stringResult);
         }
-        //Api_DeleteRecord
+       
 
         private async Task<ActionResult> Api_PostRecord(string serializedModelObject, string apiUrl)
         {
@@ -118,6 +118,24 @@ namespace DeskShare.Controllers
             if (stringResult == "[]") { LogWarning($"empty json string from {apiUrl}"); return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'"); }
 
             LogInformation($"successfully post data to {apiUrl}");
+            return Json(stringResult);
+        }
+
+        private async Task<ActionResult> Api_PutRecord(string serializedModelObject, string apiUrl)
+        {
+            LogInformation($"edit data to '{apiUrl}'");
+            var modelAsStringContent = new StringContent(serializedModelObject, Encoding.UTF8, "application/json");
+            var apiDataResponse = await _api._Client.PutAsync(apiUrl, modelAsStringContent);
+
+            if (apiDataResponse.StatusCode == HttpStatusCode.Unauthorized) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return Unauthorized(apiDataResponse); }
+            if (!apiDataResponse.IsSuccessStatusCode) { LogWarning($"{apiDataResponse.StatusCode} from {apiUrl}"); return BadRequest(apiDataResponse); }
+
+
+            var stringResult = apiDataResponse.Content.ReadAsStringAsync().Result;
+
+            if (stringResult == "[]") { LogWarning($"empty json string from {apiUrl}"); return NotFound($"Es wurde kein Datensatz gefunden. URL: '{apiUrl}'"); }
+
+            LogInformation($"successfully edit data to {apiUrl}");
             return Json(stringResult);
         }
 
@@ -193,6 +211,94 @@ namespace DeskShare.Controllers
 
             return result;
         }
+
+        //
+        private ActionResult ApiEditBuilding(Buildings modelToCreate)
+        {
+            LogInformation($"Edit building '{modelToCreate._Id}' - '{modelToCreate._Name}'");
+            string apiUrl = $"api/Buildings/{modelToCreate._Id}";
+            var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
+
+            var result = Api_PutRecord(serializedModelObject, apiUrl).Result;
+
+            return result;
+        }
+
+        private ActionResult ApiEditFloor(Floors modelToCreate)
+        {
+            LogInformation($"Edit floor '{modelToCreate._Id}' - '{modelToCreate._Name}'");
+            string apiUrl = $"api/Floors/{modelToCreate._Id}";
+            var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
+
+            var result = Api_PutRecord(serializedModelObject, apiUrl).Result;
+
+            return result;
+        }
+
+        private ActionResult ApiEditRoom(Rooms modelToCreate)
+        {
+            LogInformation($"Edit room '{modelToCreate._Id}' - '{modelToCreate._Name}'");
+            string apiUrl = $"api/Rooms/{modelToCreate._Id}";
+            var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
+
+            var result = Api_PutRecord(serializedModelObject, apiUrl).Result;
+
+            return result;
+        }
+
+        private ActionResult ApiEditDesk(Desks modelToCreate)
+        {
+            LogInformation($"Edit desk '{modelToCreate._Id}' - '{modelToCreate._Name}'");
+            string apiUrl = $"api/Desks/{modelToCreate._Id}";
+            var serializedModelObject = JsonConvert.SerializeObject(modelToCreate);
+
+            var result = Api_PutRecord(serializedModelObject, apiUrl).Result;
+
+            return result;
+        }
+
+        //
+
+        private ActionResult ApiDeleteBuilding(int id)
+        {
+            LogInformation($"Delete building '{id}'");
+            string apiUrl = $"api/Buildings/{id}";
+
+            var result = Api_DeleteRecord(apiUrl).Result;
+
+            return result;
+        }
+
+        private ActionResult ApiDeleteFloor(int id)
+        {
+            LogInformation($"Delete building '{id}'");
+            string apiUrl = $"api/Floors/{id}";
+
+            var result = Api_DeleteRecord(apiUrl).Result;
+
+            return result;
+        }
+
+        private ActionResult ApiDeleteRoom(int id)
+        {
+            LogInformation($"Delete building '{id}'");
+            string apiUrl = $"api/Rooms/{id}";
+
+            var result = Api_DeleteRecord(apiUrl).Result;
+
+            return result;
+        }
+        private ActionResult ApiDeleteDesk(int id)
+        {
+            LogInformation($"Delete building '{id}'");
+            string apiUrl = $"api/Desks/{id}";
+
+            var result = Api_DeleteRecord(apiUrl).Result;
+
+            return result;
+        }
+        //
+
         private ActionResult ApiGetBuildings()
         {
             LogInformation($"get all buildings");
@@ -316,15 +422,48 @@ namespace DeskShare.Controllers
 
             if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
 
+            #region get Data
+
             var apiGetBuildings = ApiGetBuildings();
 
-            if (IsTypeOfUnauthorized(apiGetBuildings)) return RedirectToAction("Index");
+            if (IsTypeOfUnauthorized(apiGetBuildings)) { LogWarning($"Get all bookings was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
 
-            if (!IsTypeOfJson(apiGetBuildings)) return NotFound();
+            if (!IsTypeOfJson(apiGetBuildings)) { LogWarning($"Get all bookings was not found."); return NotFound(); }
 
-            var buildings = ConvertToModelBuildings(apiGetBuildings);
+            var buildings = ConvertToModelBuildings(apiGetBuildings).ToList();
 
-            return View(buildings);
+            //
+
+            var apiGetFloors = ApiGetFloors();
+
+            if (IsTypeOfUnauthorized(apiGetFloors)) return RedirectToAction("Index");
+
+            if (!IsTypeOfJson(apiGetFloors)) return NotFound();
+
+            var floors = ConvertToModelFloors(apiGetFloors).ToList();
+
+            //
+
+            var apiGetRooms = ApiGetRooms();
+
+            if (IsTypeOfUnauthorized(apiGetRooms)) return RedirectToAction("Index");
+
+            if (!IsTypeOfJson(apiGetRooms)) return NotFound();
+
+            var rooms = ConvertToModelRooms(apiGetRooms).ToList();
+
+            //
+
+            var apiGetDesks = ApiGetDesks(new Filter());
+
+            if (IsTypeOfUnauthorized(apiGetDesks)) return RedirectToAction("Index");
+
+            var desks = IsTypeOfJson(apiGetDesks) ? ConvertToModelDesks(apiGetDesks).ToList() : new List<Desks>();
+
+
+            #endregion
+
+            return View(Tuple.Create(buildings.OrderBy(x=>x._Id).AsEnumerable(),floors.OrderBy(x=>x._BuildingId).AsEnumerable(), rooms.OrderBy(x=>x._FloorId).AsEnumerable(), desks.OrderBy(x=>x._RoomId).AsEnumerable()));
         }
 
         public ActionResult Profile()
@@ -358,7 +497,7 @@ namespace DeskShare.Controllers
 
             return PartialView("_AddBuilding", new Buildings());
         }
-
+  
         [HttpPost]
         public IActionResult _AddRoom(string room)
         {
@@ -401,6 +540,143 @@ namespace DeskShare.Controllers
             return PartialView("_AddBuilding", new Buildings());
         }
 
+
+        [HttpPost]
+        public IActionResult _EditBuilding(string building, bool remove)
+        {
+            LogInformation($"Try to Edit or delete building");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var buildingModel = JsonConvert.DeserializeObject<Buildings>(building, IgnoreNullValues());
+            if (remove)
+            {
+                LogInformation($"Delete building '{buildingModel._Id}'");
+                ApiDeleteBuilding(buildingModel._Id);
+            }
+            else
+            {
+                LogInformation($"Edit building '{buildingModel._Id}'");
+                ApiEditBuilding(buildingModel);
+            }
+
+
+            //
+
+            var apiGetBuildings = ApiGetBuildings();
+
+            if (IsTypeOfUnauthorized(apiGetBuildings)) { LogWarning($"Get all buildings was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            if (!IsTypeOfJson(apiGetBuildings)) { LogWarning($"Get all buildings was not found."); return NotFound(); }
+
+            var buildings = ConvertToModelBuildings(apiGetBuildings).ToList();
+
+            LogInformation($"Redirect partial /_EditBuilding");
+            return PartialView("_EditBuilding", buildings);
+        }
+
+        [HttpPost]
+        public IActionResult _EditFloor(string floor, bool remove)
+        {
+            LogInformation($"Try to Edit or delete floor");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var floorModel = JsonConvert.DeserializeObject<Floors>(floor, IgnoreNullValues());
+            if (remove)
+            {
+                LogInformation($"Delete floor '{floorModel._Id}'");
+                ApiDeleteFloor(floorModel._Id);
+            }
+            else
+            {
+                LogInformation($"Edit floor '{floorModel._Id}'");
+                ApiEditFloor(floorModel);
+            }
+
+
+            //
+
+            var apiGetFloors = ApiGetFloors();
+
+            if (IsTypeOfUnauthorized(apiGetFloors)) { LogWarning($"Get all floors was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            if (!IsTypeOfJson(apiGetFloors)) { LogWarning($"Get all floors was not found."); return NotFound(); }
+
+            var floors = ConvertToModelFloors(apiGetFloors).ToList();
+
+            LogInformation($"Redirect partial /_EditFloor");
+            return PartialView("_EditFloor", floors);
+        }
+
+        [HttpPost]
+        public IActionResult _EditRoom(string room, bool remove)
+        {
+            LogInformation($"Try to Edit or delete room");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var roomModel = JsonConvert.DeserializeObject<Rooms>(room, IgnoreNullValues());
+            if (remove)
+            {
+                LogInformation($"Delete room '{roomModel._Id}'");
+                ApiDeleteRoom(roomModel._Id);
+            }
+            else
+            {
+                LogInformation($"Edit room '{roomModel._Id}'");
+                ApiEditRoom(roomModel);
+            }
+
+
+            //
+
+            var apiGetRooms = ApiGetRooms();
+
+            if (IsTypeOfUnauthorized(apiGetRooms)) { LogWarning($"Get all rooms was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            if (!IsTypeOfJson(apiGetRooms)) { LogWarning($"Get all rooms was not found."); return NotFound(); }
+
+            var rooms = ConvertToModelRooms(apiGetRooms).ToList();
+
+            LogInformation($"Redirect partial /_EditRoom");
+            return PartialView("_EditRoom", rooms);
+        }
+
+
+        [HttpPost]
+        public IActionResult _EditDesk(string desk, bool remove)
+        {
+            LogInformation($"Try to Edit or delete desk");
+            if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
+            if (!CheckAdminStatus()) { LogWarning($"Admin check not passed. Redirect to /Index"); return Unauthorized(); }
+
+            var deskModel = JsonConvert.DeserializeObject<Desks>(desk, IgnoreNullValues());
+            if (remove)
+            {
+                LogInformation($"Delete desk '{deskModel._Id}'");
+                ApiDeleteDesk(deskModel._Id);
+            }
+            else
+            {
+                LogInformation($"Edit desk '{deskModel._Id}'");
+                ApiEditDesk(deskModel);
+            }
+
+
+            //
+
+            var apiGetDesks = ApiGetDesks(new Filter());
+
+            if (IsTypeOfUnauthorized(apiGetDesks)) { LogWarning($"Get all desks was not authorized. Redirect to /Index"); return RedirectToAction("Index"); }
+
+            if (!IsTypeOfJson(apiGetDesks)) { LogWarning($"Get all desks was not found."); return NotFound(); }
+
+            var rooms = ConvertToModelRooms(apiGetDesks).ToList();
+
+            LogInformation($"Redirect partial /_EditDesk");
+            return PartialView("_EditDesk", rooms);
+        }
         #endregion
 
         #region ModelConverters

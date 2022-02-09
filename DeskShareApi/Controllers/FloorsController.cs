@@ -66,12 +66,8 @@ namespace DeskShareApi.Controllers
         // PUT: api/Floors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFloors(int id, Floors floors)
+        public async Task<IActionResult> PutFloors(Floors floors)
         {
-            if (id != floors._Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(floors).State = EntityState.Modified;
 
@@ -81,7 +77,7 @@ namespace DeskShareApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FloorsExists(id))
+                if (!FloorsExists(floors._Id))
                 {
                     return NotFound();
                 }

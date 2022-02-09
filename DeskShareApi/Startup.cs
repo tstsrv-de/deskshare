@@ -4,19 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DeskShareApi
 {
@@ -37,13 +31,13 @@ namespace DeskShareApi
             options.UseMySql(_Configuration.GetConnectionString("DeskShareConnection"),
             ServerVersion.AutoDetect(_Configuration.GetConnectionString("DeskShareConnection"))));
 
-            //inject MySql Connection for Data
+            //inject MySql Connection for Datausage
             services.AddDbContext<DbContextDeskShare>(options =>
                 options.UseMySql(_Configuration.GetConnectionString("DeskShareConnection"),
                     ServerVersion.AutoDetect(_Configuration.GetConnectionString("DeskShareConnection"))));
 
 
-            // For Identity
+            // Inject Identity-Framework
             services.AddIdentity<UserIdentity, IdentityRole>()
             .AddEntityFrameworkStores<DeskShareDbUserManager>()
             .AddDefaultTokenProviders();
@@ -55,7 +49,6 @@ namespace DeskShareApi
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
             {
@@ -76,20 +69,20 @@ namespace DeskShareApi
             services.AddLogging();
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeskShareApi", Version = "v1" });
-                // To Enable authorization using Swagger (JWT)
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-                });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeskShareApi", Version = "v1" });
+            //    // To Enable authorization using Swagger (JWT)
+            //    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            //    {
+            //        Name = "Authorization",
+            //        Type = SecuritySchemeType.ApiKey,
+            //        Scheme = "Bearer",
+            //        BearerFormat = "JWT",
+            //        In = ParameterLocation.Header,
+            //        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+            //    });
+            //});
 
         }
 

@@ -1,26 +1,57 @@
 ﻿@{ Layout = "_Layout";}
-@model IEnumerable<Buildings>
-<div>
-    <a asp-action="Booking">Zurück</a>
-</div>
-<span id="_AddBuildingSpan">
-    @await Html.PartialAsync("_AddBuilding", new Buildings())
-</span>
-<hr />
-<span id="_AddFloorSpan">
-    @await Html.PartialAsync("_AddFloor", Tuple.Create(Model, new Floors()))
-</span>
-<hr />
-<span id="_AddRoomSpan">
-    @await Html.PartialAsync("_AddRoom", new Rooms())
-</span>
-<hr />
-<span id="_AddDeskSpan">
-    @await Html.PartialAsync("_AddDesk", new Desks())
-</span>
-<div>
-    <a asp-action="Booking">Zurück</a>
-</div>
+@model Tuple<IEnumerable<Buildings>, IEnumerable<Floors>, IEnumerable<Rooms>, IEnumerable<Desks>>
+
+<form>
+    <body>
+        <div class="row">
+            <div class="col-xl-6">
+
+                <div id="_AddBuildingdiv" class="fakeimg ">
+                    @await Html.PartialAsync("_AddBuilding", new Buildings())
+                </div>
+                <hr />
+                <div id="_AddFloordiv" class="fakeimg ">
+                    @await Html.PartialAsync("_AddFloor", Tuple.Create(Model.Item1, new Floors()))
+                </div>
+                <hr />
+                <div id="_AddRoomdiv" class="fakeimg ">
+                    @await Html.PartialAsync("_AddRoom", new Rooms())
+                </div>
+                <hr />
+                <div id="_AddDeskdiv" class="fakeimg ">
+                    @await Html.PartialAsync("_AddDesk", new Desks())
+                </div>
+
+            </div>
+            <div class="col-xl-6">
+                <div id="_AddDeskdiv" class="fakeimg ">
+                    @await Html.PartialAsync("_AddUser", new UserIdentity())
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <div id="_EditBuildingDiv" class="fakeimg ">
+            @await Html.PartialAsync("_EditBuilding", Model.Item1)
+        </div>
+        <hr />
+        <div id="_EditFloorDiv" class="fakeimg ">
+            @await Html.PartialAsync("_EditFloor", Model.Item2)
+        </div>
+        <hr />
+        <div id="_EditRoomDiv" class="fakeimg ">
+            @await Html.PartialAsync("_EditRoom", Model.Item3)
+        </div>
+        <hr />
+        <div id="_EditDeskDiv" class="fakeimg ">
+            @await Html.PartialAsync("_EditDesk", Model.Item4)
+        </div>
+    </body>
+</form>
+
+
+
+
 <script>
     $(window).on('load', function () {
         setNavbarEvents();
@@ -35,8 +66,185 @@
         _AddFloorURL: '@Url.Action("_AddFloor", "Home")',
         _AddRoomURL: '@Url.Action("_AddRoom", "Home")',
         _AddDeskURL: '@Url.Action("_AddDesk", "Home")',
+        _EditBuildingURL: '@Url.Action("_EditBuilding", "Home")',
+        _EditFloorURL: '@Url.Action("_EditFloor", "Home")',
+        _EditRoomURL: '@Url.Action("_EditRoom", "Home")',
+           _EditDeskURL: '@Url.Action("_EditDesk", "Home")',
     }
 
+    function saveBuildingRecord(id) {
+        var building = {
+            _Id: id,
+            _Order: $("#buildingOrder_"+id).val(),
+            _Location: $("#buildingLocation_"+id).val(),
+            _Name: $("#buildingName_"+id).val()
+        }
+        console.log("Edit building"); console.log(building);
+        window.$.ajax({
+            url: window.Urls._EditBuildingURL,
+            data: { building: JSON.stringify(building), remove:false },
+            type: "POST",
+            success: function (data) {
+                $("#_EditBuildingDiv").html(data);
+                console.log("Edit building success");
+            }, error: function(){
+                console.log("Edit building failed");
+            }
+        });
+    }
+    function deleteBuildingRecord(id) {
+        var building = {
+            _Id: id,
+            _Order: $("#buildingOrder_" + id).val(),
+            _Location: $("#buildingLocation_" + id).val(),
+            _Name: $("#buildingName_" + id).val()
+        }
+
+        window.$.ajax({
+            url: window.Urls._EditBuildingURL,
+            data: { building: JSON.stringify(building), remove: true },
+            type: "POST",
+            success: function (data) {
+                $("#_EditBuildingDiv").html(data);
+            }, error: {
+
+            }
+        });
+    }
+
+    function saveFloorRecord(id) {
+        var floor = {
+            _Id: id,
+            _Order: $("#floorOrder_" + id).val(),
+            _BuildingId: $("#floorBuilding_" + id).val(),
+            _Name: $("#floorName_" + id).val()
+        }
+        console.log("Edit floor"); console.log(floor);
+        window.$.ajax({
+            url: window.Urls._EditFloorURL,
+            data: { floor: JSON.stringify(floor), remove: false },
+            type: "POST",
+            success: function (data) {
+                $("#_EditFloorDiv").html(data);
+                console.log("Edit floor success");
+            }, error: function () {
+                console.log("Edit floor failed");
+            }
+        });
+    }
+    function deleteFloorRecord(id) {
+        var floor = {
+            _Id: id,
+            _Order: $("#floorOrder_" + id).val(),
+            _BuildingId: $("#floorBuilding_" + id).val(),
+            _Name: $("#floorName_" + id).val()
+           
+        }
+
+        window.$.ajax({
+            url: window.Urls._EditFloorURL,
+            data: { floor: JSON.stringify(floor), remove: true },
+            type: "POST",
+            success: function (data) {
+                $("#_EditFloorDiv").html(data);
+            }, error: {
+
+            }
+        });
+    }
+
+
+    function saveRoomRecord(id) {
+        var room = {
+            _Id: id,
+            _Order: $("#roomOrder_" + id).val(),
+            _Name: $("#roomName_" + id).val(),
+            _FloorId: $("#roomFloorid_"+id).id()
+        }
+        console.log("Edit room"); console.log(room);
+        window.$.ajax({
+            url: window.Urls._EditRoomURL,
+            data: { room: JSON.stringify(room), remove: false },
+            type: "POST",
+            success: function (data) {
+                $("#_EditRoomDiv").html(data);
+                console.log("Edit room success");
+            }, error: function () {
+                console.log("Edit room failed");
+            }
+        });
+    }
+    function deleteRoomRecord(id) {
+        var room = {
+            _Id: id,
+            _Order: $("#roomOrder_" + id).val(),
+            _Name: $("#roomName_" + id).val(),
+            _FloorId: $("#roomFloorid_" + id).id()
+        }
+
+        window.$.ajax({
+            url: window.Urls._EditRoomURL,
+            data: { room: JSON.stringify(room), remove: true },
+            type: "POST",
+            success: function (data) {
+                $("#_EditRoomDiv").html(data);
+            }, error: {
+
+            }
+        });
+    }
+
+    function saveDeskRecord(id) {
+        var desk = {
+            _Id: id,
+            _Order: $("#deskOrder_" + id).val(),
+            _Name: $("#deskName_" + id).val(),
+            _RoomId: $("#deskRoom_" + id).val(),
+            _Screens: $("#deskScreens_" + id).val(),
+            _Keyboard: $("#deskKeyboard_" + id).val(),
+            _Mouse: $("#deskMouse_" + id).val(),
+            _Docking: $("#deskDocking_" + id).val(),
+            _Computer: $("#deskComputer_" + id).val(),
+            _Stand: $("#deskStand_" + id).val()
+        }
+        console.log("Edit desk"); console.log(desk);
+        window.$.ajax({
+            url: window.Urls._EditDeskURL,
+            data: { desk: JSON.stringify(desk), remove: false },
+            type: "POST",
+            success: function (data) {
+                $("#_EditDeskDiv").html(data);
+                console.log("Edit desk success");
+            }, error: function () {
+                console.log("Edit desk failed");
+            }
+        });
+    }
+    function deleteDeskRecord(id) {
+        var desk = {
+            _Id: id,
+            _Order: $("#deskOrder_" + id).val(),
+            _Name: $("#deskName_" + id).val(),
+            _RoomId: $("#deskRoom_" + id).val(),
+            _Screens: $("#deskScreens_" + id).val(),
+            _Keyboard: $("#deskKeyboard_" + id).val(),
+            _Mouse: $("#deskMouse_" + id).val(),
+            _Docking: $("#deskDocking_" + id).val(),
+            _Computer: $("#deskComputer_" + id).val(),
+            _Stand: $("#deskStand_" + id).val()
+        }
+
+        window.$.ajax({
+            url: window.Urls._EditDeskURL,
+            data: { desk: JSON.stringify(desk), remove: true },
+            type: "POST",
+            success: function (data) {
+                $("#_EditDeskDiv").html(data);
+            }, error: {
+
+            }
+        });
+    }
 
         $("#_AddBuildingSubmitButton").click(function() {
             var building= {

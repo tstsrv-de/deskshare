@@ -70,26 +70,22 @@ namespace DeskShareApi.Controllers
         // PUT: api/Buildings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBuildings(int id, Buildings buildings)
+        public async Task<IActionResult> PutBuildings(Buildings buildings)
         {
-            LogInformation($"edit building '{id}'");
-            if (id != buildings._Id)
-            {
-                LogWarning($"building id '{id}' could not be changed");
-                return BadRequest();
-            }
-
+          
+            LogInformation($"edit building '{buildings._Id}'");
+           
             _context.Entry(buildings).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                LogInformation($"building '{id}' changed");
+                LogInformation($"building '{buildings._Id}' changed");
             }
             catch (DbUpdateConcurrencyException e)
             {
                 LogWarning($"DbUpdateConcurrencyException {e.Message}");
-                if (!BuildingsExists(id))
+                if (!BuildingsExists(buildings._Id))
                 {
                     return NotFound();
                 }

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DeskShare.Models.Buildings>
+
+<h3 class="text-center">Gebäude</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model._Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model._Order)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model._Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model._Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>                
+                @Html.DisplayFor(modelItem => item._Id)
+            </td>
+            <td>
+                @Html.EditorFor(modelItem => item._Order,new { htmlAttributes=new { @class="form-control",@id="buildingOrder_"+item._Id} })
+            </td>
+            <td>
+                @Html.EditorFor(modelItem => item._Location, new { htmlAttributes = new { @class = "form-control", @id = "buildingLocation_" + item._Id } })
+            </td>
+            <td>
+                @Html.EditorFor(modelItem => item._Name, new { htmlAttributes = new { @class = "form-control", @id = "buildingName_" + item._Id } })
+            </td>
+            <td>
+                <div class="input-group-prepend">
+              <div class="btn btn-success "style="padding-right:5px" onclick="saveBuildingRecord(@item._Id)">Speichern</div> 
+                    <div class="btn btn-danger"onclick="deleteBuildingRecord(@item._Id)">löschen</div>  
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
