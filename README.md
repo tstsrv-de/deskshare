@@ -10,8 +10,8 @@
 
 ### rename Docker.yml
 ```shell
-rename Docker.yaml to srv_Docker.yaml
-rename local_Docker.yaml to Docker.yaml
+rename docker-compose.yaml to srv_docker-compose.yaml
+rename local_docker-compose.yaml to docker-compose.yaml
 ```
 
 ### run Docker.yml
