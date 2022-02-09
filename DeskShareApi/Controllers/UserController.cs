@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeskShareApi.Controllers
 {
@@ -44,6 +45,7 @@ namespace DeskShareApi.Controllers
 
         [HttpGet]
         [Route("perm")]
+        [Authorize]
         public async Task<IActionResult> GetPermStatus(string uid)
         {
             var user = await _userManager.FindByIdAsync(uid);
