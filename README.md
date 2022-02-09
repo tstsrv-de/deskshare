@@ -14,7 +14,7 @@ rename docker-compose.yaml to srv_docker-compose.yaml
 rename local_docker-compose.yaml to docker-compose.yaml
 ```
 
-### run Docker.yml
+### run docker-compose.yml on your local system
 ```shell
 navigate to project foler 
 run docker-compose up --build
