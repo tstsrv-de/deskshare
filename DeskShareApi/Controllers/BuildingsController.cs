@@ -67,9 +67,7 @@ namespace DeskShareApi.Controllers
             return buildings;
         }
 
-        // PUT: api/Buildings/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        // PUT: api/Buildings
         public async Task<IActionResult> PutBuildings(Buildings buildings)
         {
           
@@ -87,23 +85,27 @@ namespace DeskShareApi.Controllers
                 LogWarning($"DbUpdateConcurrencyException {e.Message}");
                 if (!BuildingsExists(buildings._Id))
                 {
+                    LogError($"{buildings._Id} not found");
                     return NotFound();
                 }
                 else
-                {
-                    throw;
-                }
+                {}
             }
 
             return NoContent();
         }
 
         // POST: api/Buildings
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Buildings>> PostBuildings(Buildings buildings)
         {
             LogInformation($"create building '{buildings._Name}'");
+            if (!TryValidateModel(buildings))
+            {
+                LogError("'{buildings._Name}' hat die Validierung nicht bestanden");
+                return ValidationProblem();
+            }
+
             _context._Buildings.Add(buildings);
             await _context.SaveChangesAsync();
             LogInformation($"saved new building '{buildings._Name}'");

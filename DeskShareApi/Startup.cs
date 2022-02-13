@@ -69,20 +69,7 @@ namespace DeskShareApi
             services.AddLogging();
 
             services.AddControllers();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeskShareApi", Version = "v1" });
-            //    // To Enable authorization using Swagger (JWT)
-            //    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-            //    {
-            //        Name = "Authorization",
-            //        Type = SecuritySchemeType.ApiKey,
-            //        Scheme = "Bearer",
-            //        BearerFormat = "JWT",
-            //        In = ParameterLocation.Header,
-            //        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-            //    });
-            //});
+    
 
         }
 
@@ -91,17 +78,14 @@ namespace DeskShareApi
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DeskShareApi v1"));
+                app.UseDeveloperExceptionPage();                
             }
 
             app.UseRouting();
 
- app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
            
-
             SeedDb.Initialize(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider);
 
             app.UseEndpoints(endpoints =>

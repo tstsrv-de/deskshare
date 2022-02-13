@@ -1,6 +1,8 @@
-version: "3.7" 
-services:  
-  database:   
+version: "3.7"
+services:
+  database:
+    networks:
+     - max_intern
     image: mysql:8.0
     container_name: dsapi_mysql
     environment:
@@ -10,7 +12,9 @@ services:
      - ./db-dump:/docker-entrypoint-initdb.d
     ports:
     - "3306:3306"
-  api:  
+  api:
+    networks:
+     - max_intern
     build: ./DeskShareApi
     container_name: dsapi
     ports:
@@ -21,12 +25,21 @@ services:
       - database
     depends_on:
       - database
-  client:  
+  client:
+    networks:
+     - tstsrv_default 
+     - max_intern        
     build: ./DeskShare
     container_name: dsclient
     ports:
-      - "80:80"
-      - "443:443"
+      - "6080:80"
+      - "6443:443"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.deskshare.rule=Host(`deskshare.tstsrv.de`)
+      - traefik.http.routers.deskshare.entrypoints=https
+      - traefik.http.routers.deskshare.tls=true
+      - traefik.http.routers.deskshare.tls.certresolver=letsencrypt 
     command: ["./wait-for-it.sh", "api:80", "--", "dotnet", "DeskShare.dll"]
     links:
       - api
@@ -34,3 +47,8 @@ services:
       - api
     environment:
       TZ: "Europe/Berlin"
+networks:
+  tstsrv_default:
+    external: true
+  max_intern:
+    external: false

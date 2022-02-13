@@ -20,7 +20,5 @@ namespace DeskShareApi.Models
         [Column("DOCKING")] public bool _Docking { get; set; }
         [Column("COMPUTER")] public bool _Computer { get; set; }
         [Column("STAND")] public bool _Stand { get; set; }
-      
-
     }
 }

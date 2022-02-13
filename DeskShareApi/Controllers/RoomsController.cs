@@ -45,24 +45,12 @@ namespace DeskShareApi.Controllers
             return rooms;
         }
 
-        // GET: api/Rooms/byFloors?id=5&status=true
+        // GET: api/Rooms/byFloors?id=5
         [HttpGet]
         [Route("byFloor")]
         public async Task<ActionResult<IEnumerable<Rooms>>> GetRoomsByFloor(int id)
         {
-            IEnumerable<Rooms> rooms;
-
-            
-                rooms = await _context._Rooms.Where(x => x._FloorId.Equals(id)).OrderBy(x => x._Order).ToListAsync();
-           
-           
-
-            if (rooms == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(rooms);
+            return Ok(await _context._Rooms.Where(x => x._FloorId.Equals(id)).OrderBy(x => x._Order).ToListAsync());
         }
 
         // PUT: api/Rooms/5

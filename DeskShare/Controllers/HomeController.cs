@@ -223,7 +223,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         private ActionResult ApiEditFloor(Floors modelToCreate)
         {
             LogInformation($"Edit floor '{modelToCreate._Id}' - '{modelToCreate._Name}'");
@@ -234,7 +233,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         private ActionResult ApiEditRoom(Rooms modelToCreate)
         {
             LogInformation($"Edit room '{modelToCreate._Id}' - '{modelToCreate._Name}'");
@@ -245,7 +243,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         private ActionResult ApiEditDesk(Desks modelToCreate)
         {
             LogInformation($"Edit desk '{modelToCreate._Id}' - '{modelToCreate._Name}'");
@@ -256,7 +253,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         //
 
         private ActionResult ApiDeleteBuilding(int id)
@@ -268,7 +264,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         private ActionResult ApiDeleteFloor(int id)
         {
             LogInformation($"Delete building '{id}'");
@@ -278,7 +273,6 @@ namespace DeskShare.Controllers
 
             return result;
         }
-
         private ActionResult ApiDeleteRoom(int id)
         {
             LogInformation($"Delete building '{id}'");
@@ -297,7 +291,7 @@ namespace DeskShare.Controllers
 
             return result;
         }
-        //
+      
 
         private ActionResult ApiGetBuildings()
         {
@@ -305,8 +299,7 @@ namespace DeskShare.Controllers
             var apiUrl = $"api/Buildings";
 
             return Api_GetRecords(apiUrl).Result;
-        }
-
+        }        
         private ActionResult ApiGetFloors()
         {
             LogInformation($"get all floors");
@@ -321,7 +314,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetDesks(Filter filterModel)
         {
             LogInformation($"get all desks");
@@ -329,7 +321,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetBookings(Filter filterModel)
         {
             LogInformation($"get all bookings");
@@ -337,7 +328,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetFloorsByBuilding(int id)
         {
             LogInformation($"get all floors by buildung id '{id}'");
@@ -345,7 +335,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetRoomsByFloor(int id)
         {
             LogInformation($"get all rooms by floor id '{id}'");
@@ -353,7 +342,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetDesksByRoom(int id)
         {
             LogInformation($"get all desks by room id '{id}'");
@@ -361,7 +349,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetBookingsByDesk(int id)
         {
             LogInformation($"get all bookings by desk id '{id}'");
@@ -369,7 +356,6 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiGetBookingsByUser(string id,bool all)
         {
             LogInformation($"get all bookings by user id '{id}'");
@@ -377,15 +363,13 @@ namespace DeskShare.Controllers
 
             return Api_GetRecords(apiUrl).Result;
         }
-
         private ActionResult ApiCheckBooking(DateTime start, DateTime end,int desk)
         {
             LogInformation($"check booking between '{start}' & '{end}'");
             var apiUrl = $"api/Bookings/CheckBooking?start={start}&end={end}&desk={desk}";
 
             return Api_GetRecords(apiUrl).Result;
-        }
-        
+        }        
         private ActionResult ApiDeleteBooking(int id, string uid)
         {
             LogInformation($"User '{uid}' delete booking '{id}'");
@@ -822,6 +806,11 @@ namespace DeskShare.Controllers
         [HttpPost]
         public ActionResult CreateBooking(Bookings bookingModel)
         {
+            if ((bookingModel._Start>bookingModel._End)||(bookingModel._Start<DateTime.Now))
+            {
+                return BadRequest("Der Buchungszeitraum ist ungültig.");
+            }
+
             LogInformation($"Ajax call to create booking for user '{bookingModel._User}' in desk '{bookingModel._Desk}'");
             if (!CheckLogInStatus()) { LogWarning($"User check not passed. Redirect to /Index"); return RedirectToAction("Index"); }
 

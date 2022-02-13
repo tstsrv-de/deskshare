@@ -41,7 +41,7 @@ namespace DeskShareApi.Controllers
         #endregion
 
 
-        // GET: api/Desks
+        // GET: api/Desks?mouse=false&keyboard=false&computer=false&docking=false&noscreen=false&onescreen=false&twoscreens=false&threescreens=false
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Desks>>> Get_Desks(bool mouse, bool keyboard, bool computer, bool docking, bool noscreen, bool onescreen, bool twoscreens, bool threescreens)
         {
@@ -108,16 +108,7 @@ namespace DeskShareApi.Controllers
         [Route("byRoom")]
         public async Task<ActionResult<Desks>> GetDesksByRoom(int id)
         {
-            LogInformation($"get desks by room '{id}'");
-            var desks = await _context._Desks.Where(x=>x._RoomId.Equals(id)).ToListAsync();
-
-            if (desks == null)
-            {
-                LogWarning($"desks by room '{id}' not found");
-                return NotFound();
-            }
-
-            return Ok(desks);
+            return Ok(await _context._Desks.Where(x => x._RoomId.Equals(id)).ToListAsync());
         }
 
         // PUT: api/Desks/5

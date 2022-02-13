@@ -8,11 +8,6 @@
 - Clone git repo into the current directory with ``git clone git@github.com:tstsrv-de/deskshare.git .``
 ```
 
-### rename Docker.yml
-```shell
-rename Docker.yaml to srv_Docker.yaml
-rename local_Docker.yaml to Docker.yaml
-```
 
 ### run Docker.yml
 ```shell
