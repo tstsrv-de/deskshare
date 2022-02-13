@@ -8,7 +8,11 @@
 - Clone git repo into the current directory with ``git clone git@github.com:tstsrv-de/deskshare.git .``
 ```
 
-
+### Default Logins
+```shell
+- User: 'user' | 'Test@123'
+- Admin: 'adminuser' | 'Test@123'
+```
 
 ### run docker-compose.yml on your local system
 ```shell
