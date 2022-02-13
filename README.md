@@ -9,7 +9,8 @@
 ```
 
 
-### run Docker.yml
+
+### run docker-compose.yml on your local system
 ```shell
 navigate to project foler 
 run docker-compose up --build
